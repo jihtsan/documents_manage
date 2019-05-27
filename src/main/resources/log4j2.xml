@@ -1,0 +1,43 @@
+<Configuration status="error" monitorInterval="1800">
+    <Properties>
+        <property name="path">data/logs</property>
+        <property name="application">spring-demo</property>
+        <property name="pattern">%d{yyyy-MM-dd}T%d{HH:mm:ss.SSSZ} %-5level %logger [${application}
+            @project.version@,%16X{X-B3-TraceId},%16X{X-B3-SpanId}] [%t] : %m%n
+        </property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd}T%d{HH:mm:ss.SSSZ} %highlight{%-5level} %style{%logger}{blue} [${application}, %style{%16X{X-B3-TraceId}}{magenta}, %style{%16X{X-B3-SpanId}}{cyan}] [%15.15t]: %m%n%wEx"/>
+        </Console>
+        <RollingRandomAccessFile name="File" fileName="${path}/${application}.log"
+                                 filePattern="${user.dir}/${path}/$${date:yyyy-MM}/${application}-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout
+                    pattern="%d{yyyy-MM-dd}T%d{HH:mm:ss.SSSZ} %-5level %logger [${application},%16X{X-B3-TraceId},%16X{X-B3-SpanId}] [%15.15t]: %m%n%wEx"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <loggers>
+        <AsyncLogger name="com.icekredit" level="info" additivity="true" includeLocation="true">
+            <AppenderRef ref="File"/>
+        </AsyncLogger>
+        <AsyncLogger name="org" level="warn" additivity="true" includeLocation="true">
+            <AppenderRef ref="File"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.aliyun" level="warn" additivity="true" includeLocation="true">
+            <AppenderRef ref="File"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.netflix" level="warn" additivity="true" includeLocation="true">
+            <AppenderRef ref="File"/>
+        </AsyncLogger>
+        <AsyncRoot level="Debug" includeLocation="true">
+            <appender-ref ref="Console"/>
+        </AsyncRoot>
+    </loggers>
+</Configuration>
