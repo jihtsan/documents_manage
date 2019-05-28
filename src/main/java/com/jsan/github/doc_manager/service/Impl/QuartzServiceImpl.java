@@ -3,7 +3,7 @@ package com.jsan.github.doc_manager.service.Impl;
 
 
 import cn.hutool.core.date.DateUtil;
-import com.jsan.github.doc_manager.entity.QrtzEntity;
+import com.jsan.github.doc_manager.entity.VO.QrtzModel;
 import com.jsan.github.doc_manager.service.QuartzService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -212,8 +212,8 @@ public class QuartzServiceImpl implements QuartzService {
      * @return
      */
     @Override
-    public List<QrtzEntity> queryAllJob() {
-        List<QrtzEntity> jobList = null;
+    public List<QrtzModel> queryAllJob() {
+        List<QrtzModel> jobList = null;
         try {
             GroupMatcher<JobKey> matcher = GroupMatcher.anyJobGroup();
             Set<JobKey> jobKeys = sched.getJobKeys(matcher);
@@ -221,7 +221,7 @@ public class QuartzServiceImpl implements QuartzService {
             for (JobKey jobKey : jobKeys) {
                 List<? extends Trigger> triggers = sched.getTriggersOfJob(jobKey);
                 for (Trigger trigger : triggers) {
-                    QrtzEntity qrtz = QrtzEntity.getInstance(sched, jobKey, trigger);
+                    QrtzModel qrtz = QrtzModel.getInstance(sched, jobKey, trigger);
                     jobList.add(qrtz);
                 }
             }
@@ -239,8 +239,8 @@ public class QuartzServiceImpl implements QuartzService {
      * @return
      */
     @Override
-    public List<QrtzEntity> queryRunJon() {
-        List<QrtzEntity> jobList = null;
+    public List<QrtzModel> queryRunJon() {
+        List<QrtzModel> jobList = null;
         try {
             List<JobExecutionContext> executingJobs = sched.getCurrentlyExecutingJobs();
             jobList = new ArrayList<>(executingJobs.size());
@@ -248,7 +248,7 @@ public class QuartzServiceImpl implements QuartzService {
                 JobDetail jobDetail = executingJob.getJobDetail();
                 JobKey jobKey = jobDetail.getKey();
                 Trigger trigger = executingJob.getTrigger();
-                QrtzEntity qrtz = QrtzEntity.getInstance(sched, jobKey, trigger);
+                QrtzModel qrtz = QrtzModel.getInstance(sched, jobKey, trigger);
                 jobList.add(qrtz);
             }
         } catch (SchedulerException e) {

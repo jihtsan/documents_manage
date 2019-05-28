@@ -28,7 +28,7 @@ spring:
   datasource:
     db:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: jdbc:mysql://www.jsan.pro:3306/Jsan?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&failOverReadOnly=false&autoReconnect=true&useSSL=false&noAccessToProcedureBodies=true&allowMultiQueries=true
+      jdbc-url: jdbc:mysql://www.jsan.pro:3306/rhino?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&failOverReadOnly=false&autoReconnect=true&useSSL=false&noAccessToProcedureBodies=true&allowMultiQueries=true
       username: root
       password: 123456
       type: com.alibaba.druid.pool.DruidDataSource
@@ -49,4 +49,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 100MB
 
-
+mybatis-plus:
+  # 扫描 mapper.xml
+  mapper-locations: classpath*:/mapper/*Mapper.xml

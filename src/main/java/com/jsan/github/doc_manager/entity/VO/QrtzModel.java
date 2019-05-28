@@ -1,4 +1,4 @@
-package com.jsan.github.doc_manager.entity;
+package com.jsan.github.doc_manager.entity.VO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,15 +12,15 @@ import org.quartz.*;
 
 @Data
 @EqualsAndHashCode
-public class QrtzDTO {
+public class QrtzModel {
     private String jobName;
     private String jobGroupName;
     private TriggerKey description;
     private String jobStatus;
     private String jobTime;
 
-    public static QrtzDTO getInstance(Scheduler sched, JobKey jobKey,Trigger trigger) throws SchedulerException {
-        QrtzDTO qrtz = new QrtzDTO();
+    public static QrtzModel getInstance(Scheduler sched, JobKey jobKey, Trigger trigger) throws SchedulerException {
+        QrtzModel qrtz = new QrtzModel();
         Trigger.TriggerState triggerState = sched.getTriggerState(trigger.getKey());
         qrtz.setJobName(jobKey.getName());
         qrtz.setJobGroupName(jobKey.getGroup());

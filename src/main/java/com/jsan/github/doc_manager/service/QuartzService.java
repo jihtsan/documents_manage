@@ -1,7 +1,7 @@
 package com.jsan.github.doc_manager.service;
 
 
-import com.jsan.github.doc_manager.entity.QrtzEntity;
+import com.jsan.github.doc_manager.entity.VO.QrtzModel;
 import org.quartz.*;
 
 import java.util.*;
@@ -96,7 +96,7 @@ public interface QuartzService {
      *
      * @return
      */
-    List<QrtzEntity> queryAllJob();
+    List<QrtzModel> queryAllJob();
 
 
     /**
@@ -105,6 +105,6 @@ public interface QuartzService {
      *
      * @return
      */
-    List<QrtzEntity> queryRunJon();
+    List<QrtzModel> queryRunJon();
 
 }
