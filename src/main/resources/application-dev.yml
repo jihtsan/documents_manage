@@ -49,6 +49,3 @@ spring:
       max-file-size: 10MB
       max-request-size: 100MB
 
-mybatis-plus:
-  # 扫描 mapper.xml
-  mapper-locations: classpath*:/mapper/*Mapper.xml

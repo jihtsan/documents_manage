@@ -83,7 +83,7 @@ public abstract class BaseController {
     }
 
 
-    ResponseModel response(Object o) {
+    public ResponseModel response(Object o) {
         responseModel.setHttpStatus(SUCCESS_CODE)
                 .setMessage(SUCCESS_MSG)
                 .setData(o);
@@ -91,25 +91,25 @@ public abstract class BaseController {
         return responseModel;
     }
 
-    ResponseModel response(String code, String message) {
+    public  ResponseModel response(String code, String message) {
         responseModel.setHttpStatus(code)
                 .setMessage(message);
         return responseModel;
     }
 
-    ResponseModel responseSuccess() {
+    public ResponseModel responseSuccess() {
         responseModel.setHttpStatus(SUCCESS_CODE)
                 .setMessage(SUCCESS_MSG);
         return responseModel;
     }
 
-    ResponseModel responseERROR() {
+    public ResponseModel responseERROR() {
         responseModel.setHttpStatus(ERROR_CODE)
                 .setMessage(SUCCESS_MSG);
         return responseModel;
     }
 
-    protected String getTokenId(HttpServletRequest request) {
+    public String getTokenId(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -122,7 +122,7 @@ public abstract class BaseController {
     }
 
 
-    String base64(String password) {
+    public String base64(String password) {
         return new String(Base64.encodeBase64(password.getBytes()));
     }
 
@@ -138,7 +138,7 @@ public abstract class BaseController {
     /**
      * 将流返回前端生成Excel
      */
-    protected void responseExcelFile(HttpServletResponse response, InputStream inputStream, String fileName) throws Exception {
+    public void responseExcelFile(HttpServletResponse response, InputStream inputStream, String fileName) throws Exception {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Content-Disposition", "attachment;filename=" + new String((fileName).getBytes(), "iso-8859-1"));

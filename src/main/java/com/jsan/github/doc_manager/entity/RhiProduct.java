@@ -1,5 +1,6 @@
 package com.jsan.github.doc_manager.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.jsan.github.doc_manager.common.BaseEntity;
@@ -18,19 +19,19 @@ import java.sql.Blob;
  * @since 2019-05-28
  */
 @Data
-@EqualsAndHashCode()
+@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("rhi_product")//数据库表名称
-public class RhiProduct {
+public class RhiProduct extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
-    @TableId("id")//数据库主键名称
-    private Long id;
 
     private String productName;
 
     private Blob productContent;
+
+    private Long dimensionId;
+
+
 
 
 }

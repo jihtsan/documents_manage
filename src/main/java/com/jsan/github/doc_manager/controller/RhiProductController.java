@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2019-05-28
  */
 @Controller
-@RequestMapping("/doc_manager/rhi-product")
+@RequestMapping("/rhi-product")
 public class RhiProductController extends BaseController {
 
 }

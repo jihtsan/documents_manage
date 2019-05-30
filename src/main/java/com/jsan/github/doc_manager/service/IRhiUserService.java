@@ -13,4 +13,5 @@ import com.jsan.github.doc_manager.entity.RhiUser;
  */
 public interface IRhiUserService extends IService<RhiUser> {
 
+     RhiUser login(String tokenId, String account, String password);
 }

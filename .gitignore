@@ -2,6 +2,8 @@ HELP.md
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+/data/
+
 
 ### STS ###
 .apt_generated
@@ -28,3 +30,12 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+${user.dir}/
+.DS_Store
+data/
+src/main/java/com/jsan/github/.DS_Store
+src/main/java/com/jsan/github/doc_manager/.DS_Store
+src/main/java/com/jsan/github/doc_manager/enums/
+src/main/java/com/jsan/github/doc_manager/utils/
+src/main/resources/static/
+src/main/resources/templates/

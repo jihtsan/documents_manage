@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2019-05-28
  */
 @Controller
-@RequestMapping("/doc_manager/rhi-acticle")
+@RequestMapping("/rhi-acticle")
 public class RhiActicleController extends BaseController {
+
+
 
 }
