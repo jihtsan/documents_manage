@@ -3,6 +3,7 @@ package com.jsan.github.doc_manager;
 import cn.hutool.core.lang.Console;
 import com.jsan.github.doc_manager.entity.RhiUser;
 import com.jsan.github.doc_manager.mapper.RhiUserMapper;
+import com.jsan.github.doc_manager.service.IRhiUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
 @SpringBootTest
 public class DocManagerApplicationTests {
 	@Resource
-	private RhiUserMapper userMapper;
+	private IRhiUserService userService;
 
 	@Test
 	public void contextLoads() {
@@ -27,7 +28,7 @@ public class DocManagerApplicationTests {
 		user.setEmail("1@1.com");
 		user.setPassword("abc111");
 		user.setUserName("abc222");
-		Console.log(userMapper.insert(user));
+		Console.log(userService.save(user));
 	}
 
 }

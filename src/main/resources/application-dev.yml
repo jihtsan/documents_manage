@@ -49,3 +49,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 100MB
 
+rhino:
+  admin:
+    userid: 1

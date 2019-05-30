@@ -3,6 +3,8 @@ package com.jsan.github.doc_manager.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsan.github.doc_manager.entity.RhiUser;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -14,4 +16,6 @@ import com.jsan.github.doc_manager.entity.RhiUser;
 public interface IRhiUserService extends IService<RhiUser> {
 
      RhiUser login(String tokenId, String account, String password);
+
+     List<RhiUser> retrieveUser(String userName,String nickName);
 }
