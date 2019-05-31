@@ -2,6 +2,8 @@
 package com.jsan.github.doc_manager.exception;
 
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 业务异常
@@ -9,46 +11,26 @@ package com.jsan.github.doc_manager.exception;
  * @author xuhua
  * @since 1.0.0
  */
+@Data
 public class BusinessException extends RuntimeException {
 
-    private String code = "100001";
 
-    private String message;
+    public final String defCode = "999";
 
-    private int level;
 
-    public BusinessException(ExceptionType exceptionType) {
-        this.code = exceptionType.getCode();
-        this.message = exceptionType.getMessage();
-        this.level = exceptionType.getLevel();
-    }
+    public final String code;
+    public final String msg;
 
-    public BusinessException(String code, String message, int level) {
+    public BusinessException(String code, String msg) {
+        super(msg);
         this.code = code;
-        this.message = message;
-        this.level = level;
+        this.msg = msg;
     }
 
-    public BusinessException(String code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public BusinessException(String message) {
-        this.message = message;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    public int getLevel() {
-        return level;
+    public BusinessException(String msg) {
+        super(msg);
+        this.code = defCode;
+        this.msg = msg;
     }
 
 }

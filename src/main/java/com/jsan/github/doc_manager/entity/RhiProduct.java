@@ -31,7 +31,7 @@ public class RhiProduct extends BaseEntity {
 
     private Long dimensionId;
 
-
+    private int topTips;
 
 
 }

@@ -37,5 +37,4 @@ public class RhiUser extends BaseEntity {
 
     private String updateTime;
 
-
 }

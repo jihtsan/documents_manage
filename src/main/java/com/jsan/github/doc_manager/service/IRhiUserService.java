@@ -4,10 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsan.github.doc_manager.entity.RhiUser;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author jobob
@@ -15,7 +16,13 @@ import java.util.List;
  */
 public interface IRhiUserService extends IService<RhiUser> {
 
-     RhiUser login(String tokenId, String account, String password);
+    void login(String account, String password);
 
-     List<RhiUser> retrieveUser(String userName,String nickName);
+    List<RhiUser> retrieveUser(String userName, String nickName);
+
+    RhiUser getUserInfoByFullUsername(String userName);
+
+    Set<String> getRolesByUserId(Long uid);
+
+    Set<String> getPermsByUserId(Long uid);
 }

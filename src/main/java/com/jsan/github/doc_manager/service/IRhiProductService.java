@@ -1,11 +1,14 @@
 package com.jsan.github.doc_manager.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jsan.github.doc_manager.entity.RhiProduct;
 
+import java.util.List;
+
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author jobob
@@ -13,4 +16,7 @@ import com.jsan.github.doc_manager.entity.RhiProduct;
  */
 public interface IRhiProductService extends IService<RhiProduct> {
 
+    IPage<RhiProduct> retrieveProductList(String productName, Long dimensionId, int pageNo);
+
+    void product2Top(long productId, int topTips);
 }
