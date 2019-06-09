@@ -47,19 +47,19 @@
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="form-group row">-->
-                            <!--<div class="col-md-4">-->
-                                <!--<div class="input-group">-->
-                                    <!--<span class="input-group-addon">密码</span>-->
-                                    <!--<input type="text" class="form-control" placeholder="请填写用户名称" id="password">-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
                         <div class="form-group row">
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <span class="input-group-addon">真实姓名</span>
-                                    <input type="text" class="form-control" placeholder="请填写用户名称" id="note">
+                                    <span class="input-group-addon">密码</span>
+                                    <input type="text" class="form-control" placeholder="请填写用户名称" id="password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">用户名昵称</span>
+                                    <input type="text" class="form-control" placeholder="用户名昵称" id="note">
                                 </div>
                             </div>
                         </div>
@@ -91,16 +91,16 @@
     function save(){
         var username = $("#username").val();
         var note = $("#note").val();
-//        var password = $("#password").val();
+       var password = $("#password").val();
         var num = 0;
         if(!username || username == ""){
             $("#username").addClass("waring");
             num = 1;
         }
-//        if(!password || password == ""){
-//            $("#password").addClass("waring");
-//            num = 1;
-//        }
+       if(!password || password == ""){
+           $("#password").addClass("waring");
+           num = 1;
+       }
         if(!note || note == ""){
             $("#note").addClass("waring");
             num = 1;
@@ -111,30 +111,30 @@
 //        alert(clientname)
         $.ajax({
             type: "post",
-            url: "user/createuser",
-            data: {
-                "username": username,
-                "note" : note,
-//                "password" : password,
-                "status" : 0,
-            },
+            url: "/rhi-user/cu_user",
+            contentType:'application/json',
+            data: JSON.stringify({
+                "userName": username,
+                "password" : password,
+                "nickName" : note,
+            }),
             dataType: "json",
             success: function (data) {
-                if(data.statusCode == 0){
+                if(data.httpStatus == '00'){
                     swal({
                         title: "提示！",
                         text: "创建成功！",
                         type: "success"
                     }, function () {
-                        location.href="toUserList";
+                        location.href="hUserList";
                     });
-                }else if(data.statusCode == 1){
+                }else {
                     swal({
                         title: "提示！",
                         text: data.message,
                         type: "error"
                     }, function () {
-                        location.href="toUserList";
+                        location.href="hUserList";
                     });
                 }
             },

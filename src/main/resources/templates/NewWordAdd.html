@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+    <link rel="stylesheet" href="resources/plugins/datatables/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="resources/plugins/bootstrap-select-1.12.4/css/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="resources/plugins/sweetalert/sweetalert.css">
+    <link rel="stylesheet" href="resources/plugins/summernote/summernote.css">
+    <link rel="stylesheet" href="resources/plugins/summernote/summernote-bs4.css">
+    <link rel="stylesheet" href="resources/plugins/summernote/summernote-lite.css">
+    <!--<link rel="stylesheet" href="resources/plugins/datepicker/datepicker3.css">-->
+    <link rel="stylesheet" href="resources/plugins/dist/css/selectize.default.css">
+    <link rel="stylesheet" href="resources/plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+    <style>
+        .waring{
+            border:2px solid red;
+        }
+    </style>
+    <script src="../static/resources/plugins/summernote/summernote-bs4.js"></script>
+    <script src="../static/resources/plugins/summernote/summernote-lite.js"></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            新闻新增
+            <small></small>
+        </h1>
+        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;" onclick="save();">保存</button>
+    </section>
+    <section class="content">
+        <img class='img_close' src='resources/img/clone.png' style="display: none">
+        <div class="row">
+            <div id="summernote"></div>
+        </div>
+    </section>
+    <script src="resources/plugins/page/page.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="resources/plugins/bootstrap-select-1.12.4/js/bootstrap-select.min.js"></script>
+    <script src="resources/js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+    <script src="resources/js/jquery.barcode.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="resources/plugins/datepicker/bootstrap-datepicker.js"></script>-->
+    <!-- <script src="resources/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>-->
+    <script src="resources/plugins/dist/js/standalone/selectize.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="resources/plugins/summernote/summernote.js"></script>
+    <script src="resources/plugins/summernote/summernote-bs4.js"></script>
+    <script src="resources/plugins/summernote/summernote-lite.js"></script>
+
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <script th:inline="javascript">//引用
+
+    $(function(e){
+            $("#summernote").summernote("code","<p>aaaaaaaaaaaaa</p>");
+
+        }
+    )
+
+    $('#summernote').summernote({
+        placeholder: 'Hello bootstrap 4',
+        tabsize: 2,
+        height: 100
+    });
+
+    function save(){
+
+    }
+    </script>
+</div>
+
+</body>
+
+</html>

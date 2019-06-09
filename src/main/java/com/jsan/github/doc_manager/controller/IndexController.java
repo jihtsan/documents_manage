@@ -36,4 +36,19 @@ public class IndexController extends BaseController {
     }
 
 
+    @GetMapping(value = "hUserAdd")
+    public ModelAndView hUserAdd(HttpSession session) {
+        return new ModelAndView("UserAdd");
+    }
+
+    @GetMapping(value = "hUserList")
+    public ModelAndView hUserList(HttpSession session) {
+        return new ModelAndView("UserList");
+    }
+
+    @GetMapping(value = "hNewWordAdd")
+    public ModelAndView hNewWordAdd(HttpSession session) {
+        return new ModelAndView("NewWordAdd");
+    }
+
 }
