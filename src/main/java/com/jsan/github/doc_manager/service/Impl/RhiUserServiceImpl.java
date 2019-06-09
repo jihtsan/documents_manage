@@ -1,6 +1,8 @@
 package com.jsan.github.doc_manager.service.Impl;
 
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jsan.github.doc_manager.entity.RhiUser;
@@ -12,6 +14,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -31,7 +34,7 @@ public class RhiUserServiceImpl extends ServiceImpl<RhiUserMapper, RhiUser> impl
     private long adminUserId;
 
     @Override
-    public void login(String account, String password) {
+    public RhiUser login(String account, String password) {
         if (StrUtil.isAllBlank(account, password)) throw new BusinessException("用户名|密码不能为空");
         Subject currentUser = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(account, password);
@@ -48,6 +51,9 @@ public class RhiUserServiceImpl extends ServiceImpl<RhiUserMapper, RhiUser> impl
         } catch (AuthenticationException ae) {
             throw BusinessError.AuthFail.exception("用户名或密码不正确");
         }
+        RhiUser user = (RhiUser) currentUser.getPrincipal();
+        Console.log(JSON.toJSONString(user));
+        return user;
     }
 
 

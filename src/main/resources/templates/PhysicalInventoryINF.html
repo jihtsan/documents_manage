@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+    <link rel="stylesheet" href="resources/plugins/datatables/dataTables.bootstrap.css"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            盘库管理
+            <small></small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>盘库管理</a></li>
+            <li class="active">盘库详情</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="box-body">
+                        <div id="cargoinf" class="row"
+                             style="margin: 20px; padding: 9px;    border: 1px solid #e3e3e3;    border-bottom-color: #e0e0e0;    border-right-color: #ececec;">
+                            <h1>盘库详情</h1>
+                            <div class="form-group" class="col-md-6 col-xs-12">
+                                <dl class="dl-horizontal">
+                                    <dt>盘库人</dt>
+                                    <dd id="username"></dd>
+                                </dl>
+                                <dl class="dl-horizontal">
+                                    <dt>盘库时间</dt>
+                                    <dd id="createtime"></dd>
+                                </dl>
+
+                            </div>
+                            <div class="form-group" class="col-md-6 col-xs-12">
+                                <dl class="dl-horizontal">
+                                    <dt>状态</dt>
+                                    <dd id="status"></dd>
+                                </dl>
+                                <dl class="dl-horizontal">
+                                    <dt>盘货仓库</dt>
+                                    <dd id="warehousename"></dd>
+                                </dl>
+                            </div>
+                            <div class="form-group" class="col-md-6 col-xs-12">
+                                <dl class="dl-horizontal">
+                                    <dt>多件</dt>
+                                    <dd id="addcount"></dd>
+                                </dl>
+                                <dl class="dl-horizontal">
+                                    <dt>多件rfid</dt>
+                                    <dd id="addrfid"></dd>
+                                </dl>
+                            </div>
+                            <div class="form-group" class="col-md-6 col-xs-12">
+                                <dl class="dl-horizontal">
+                                    <dt>缺少件数</dt>
+                                    <dd id="lackcount"></dd>
+                                </dl>
+                                <dl class="dl-horizontal">
+                                    <dt>缺少rfid</dt>
+                                    <dd id="lackrfid"></dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="display: none" id="addcargo">
+                            <div class="row"><h3>多出商品</h3></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>RFID卡</th>
+                                            <th>商品名称</th>
+                                            <th>品牌</th>
+                                            <th>种类</th>
+                                            <th>状态</th>
+                                            <th>入库时间</th>
+                                            <th>标签价格</th>
+                                            <th>是否护理</th>
+                                            <th>仓库地址</th>
+                                            <th>图片</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="addtable">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="display: none" id="lackcargo">
+                            <div class="row"><h3>缺失商品</h3></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>RFID卡</th>
+                                            <th>商品名称</th>
+                                            <th>品牌</th>
+                                            <th>种类</th>
+                                            <th>状态</th>
+                                            <th>入库时间</th>
+                                            <th>标签价格</th>
+                                            <th>是否护理</th>
+                                            <th>仓库地址</th>
+                                            <th>图片</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="lacktable">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+    <script src="resources/plugins/page/page.js"></script>
+
+
+    <script th:inline="javascript">//引用
+    /*<![CDATA[*/
+    var order = /*[[${orderid}]]*/;//取值
+    /*]]>*/
+
+    $(function () {
+        getorderbyid();
+    })
+
+    function GetRequest() {
+        url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            str = url.substr(1);
+            if (str.indexOf("&") != -1) {
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    no = theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                    pageNum = no;
+                }
+            } else {
+                no = theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+                pageNum = no;
+            }
+        }
+
+    }
+
+    function addtable(data) {
+        var id;
+        //渲染列表
+        $("#addtable").empty();
+        if (data.length>0){
+            $('#addcargo').css('display','block');
+        }
+        for (var i = 0; i < data.length; i++) {
+            id = data[i].id;
+            var rfid = data[i].rfid == null ? "-" : data[i].rfid;
+            var name = data[i].name == null ? "-" : data[i].name;
+            name = "<a href='tocargoinf?id=" + id + "'>" + name + "</a>";
+            var brand = data[i].brand == null ? "-" : data[i].brand;
+            var classify = data[i].classify == null ? "-" : data[i].classify;
+            var status = data[i].status;
+            switch (status) {
+                case 1:
+                    status = '删除';
+                    break;
+                case 0:
+                    status = '在库';
+                    break;
+                case 2:
+                    status = '租借';
+                    break;
+                case 3:
+                    status = '售出';
+                    break;
+                case 4:
+                    status = '预约';
+                    break;
+                default:
+                    status = '未知状态';
+            }
+            var createtime = data[i].createtime == null ? "-" : data[i].createtime;
+            var cost = data[i].cost == null ? "-" : data[i].cost;
+            var nurse = data[i].nurse == null ? "-" : data[i].nurse;
+            switch (nurse) {
+                case 0:
+                    nurse = '需要保养';
+                    break;
+                case 1:
+                    nurse = '不需要保养';
+                    break;
+                default:
+                    nurse = '未知状态';
+            }
+            var warehouse = data[i].warehouse == null ? "-" : data[i].warehouse;
+            var picurl = data[i].picurl == null ? "-" : data[i].picurl;
+            if (picurl != "-") {
+                picurl = "<img src='file/showimg/" + picurl + "' class='img-thumbnail' width='40' height='40' >"
+            }
+            var fun = {};
+            fun.SELECT = "doSearch(" + id + ")";
+            fun.UPDATE = "toupdate(" + id + ")";
+            //if (status == 0) {
+            //    fun.DOWN = "todown(" + id + ")";
+            $("#addtable").append("<tr class='pointer'>"
+                + "   <td>" + rfid + "</td>"
+                + "   <td>" + name + "</td>"
+                + "   <td>" + brand + "</td>"
+                + "   <td>" + classify + "</td>"
+                + "   <td>" + status + "</td>"
+                + "   <td>" + createtime + "</td>"
+                + "   <td>" + cost + "</td>"
+                + "   <td>" + nurse + "</td>"
+                + "   <td>" + warehouse + "</td>"
+                + "   <td>" + picurl + "</td>"
+                + "   </tr>");
+        }
+    }
+
+    function lacktable(data) {
+        if (data.length>0){
+            $('#lackcargo').css('display','block');
+        }
+        var id;
+        //渲染列表
+        $("#lacktable").empty();
+        for (var i = 0; i < data.length; i++) {
+            id = data[i].id;
+            var rfid = data[i].rfid == null ? "-" : data[i].rfid;
+            var name = data[i].name == null ? "-" : data[i].name;
+            name = "<a href='tocargoinf?id=" + id + "'>" + name + "</a>";
+            var brand = data[i].brand == null ? "-" : data[i].brand;
+            var classify = data[i].classify == null ? "-" : data[i].classify;
+            var status = data[i].status;
+            switch (status) {
+                case 1:
+                    status = '删除';
+                    break;
+                case 0:
+                    status = '在库';
+                    break;
+                case 2:
+                    status = '租借';
+                    break;
+                case 3:
+                    status = '售出';
+                    break;
+                case 4:
+                    status = '预约';
+                    break;
+                default:
+                    status = '未知状态';
+            }
+            var createtime = data[i].createtime == null ? "-" : data[i].createtime;
+            var cost = data[i].cost == null ? "-" : data[i].cost;
+            var nurse = data[i].nurse == null ? "-" : data[i].nurse;
+            switch (nurse) {
+                case 0:
+                    nurse = '需要保养';
+                    break;
+                case 1:
+                    nurse = '不需要保养';
+                    break;
+                default:
+                    nurse = '未知状态';
+            }
+            var warehouse = data[i].warehouse == null ? "-" : data[i].warehouse;
+            var picurl = data[i].picurl == null ? "-" : data[i].picurl;
+            if (picurl != "-") {
+                picurl = "<img src='file/showimg/" + picurl + "' class='img-thumbnail' width='40' height='40' >"
+            }
+            var fun = {};
+            fun.SELECT = "doSearch(" + id + ")";
+            fun.UPDATE = "toupdate(" + id + ")";
+            //if (status == 0) {
+            //    fun.DOWN = "todown(" + id + ")";
+            $("#lacktable").append("<tr class='pointer'>"
+                + "   <td>" + rfid + "</td>"
+                + "   <td>" + name + "</td>"
+                + "   <td>" + brand + "</td>"
+                + "   <td>" + classify + "</td>"
+                + "   <td>" + status + "</td>"
+                + "   <td>" + createtime + "</td>"
+                + "   <td>" + cost + "</td>"
+                + "   <td>" + nurse + "</td>"
+                + "   <td>" + warehouse + "</td>"
+                + "   <td>" + picurl + "</td>"
+                + "   </tr>");
+        }
+    }
+
+    function getorderbyid() {
+        $.ajax({
+            type: "get",
+            url: "cargo/" + order + "/order",
+            dataType: "json",
+            success: function (data) {
+                setorderdata(data.data);
+                if (data.data.addrfid != "") {
+                    $.ajax({
+                        type: "get",
+                        url: "cargo/getcargobyrfid",
+                        data: {
+                            "rfids": data.data.addrfid
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            addtable(data.data)
+                        }
+                    });
+                }
+
+                if (data.data.lackrfid != "") {
+                    $.ajax({
+                        type: "get",
+                        url: "cargo/getcargobyrfid",
+                        data: {
+                            "rfids": data.data.lackrfid
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            lacktable(data.data)
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function setorderdata(data) {
+        var username = data.username == null ? "-" : data.username;
+        var warehousename = data.warehousename == null ? "-" : data.warehousename;
+        var createtime = data.createtime == null ? "-" : data.createtime;
+        var addcount = data.addcount == null ? "-" : data.addcount;
+        var addrfid = data.addrfid == null ? "-" : data.addrfid;
+        var lackcount = data.lackcount == null ? "-" : data.lackcount;
+        var lackrfid = data.lackrfid == null ? "-" : data.lackrfid;
+        var status = data.status;
+        switch (status) {
+            case 0:
+                status = '盘库无异常';
+                break;
+            case 1:
+                status = '盘库缺失';
+                break;
+            case 2:
+                status = '盘库多出';
+                break;
+            case 3:
+                status = '又多又少';
+                break;
+            default:
+                status = '未知状态';
+        }
+        $("#username").empty();
+        $("#username").append(username);
+        $("#createtime").empty();
+        $("#createtime").append(createtime);
+        $("#status").empty();
+        $("#status").append(status);
+        $("#addcount").empty();
+        $("#addcount").append(addcount);
+        $("#addrfid").empty();
+        $("#addrfid").append(addrfid);
+        $("#lackcount").empty();
+        $("#lackcount").append(lackcount);
+        $("#lackrfid").empty();
+        $("#lackrfid").append(lackrfid);
+        $("#warehousename").empty();
+        $("#warehousename").append(warehousename);
+    }
+
+
+    </script>
+</div>
+
+</body>
+
+</html>
+
+

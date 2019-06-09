@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>盘货组</title>
+    <link rel="stylesheet" href="resources/plugins/datatables/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="resources/plugins/bootstrap-select-1.12.4/css/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="resources/plugins/sweetalert/sweetalert.css">
+
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>盘货组</h1>
+        <div style="float: right;margin-top: -25px;">
+            <div style="float: left;">
+                <div>
+                    <div style="float:left;"><input class="form-control" placeholder="请输入客户" id="customer"></div>
+                    <div style="float:left;"><input class="form-control" placeholder="请输入国家" id="country"></div>
+                    <div style="float:left;">
+                        <button class="btn btn-default"><a onclick="findall();"><i class="fa fa-search"></i></a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- <div style="float: left;">
+                 <button class="btn btn-default"><a href="toppanhuoadd"><i class="fa fa-plus"></i></a></button>
+             </div>-->
+            <!--<div style="float: left;">
+                <button class="btn btn-default"><i class="fa fa-file-text-o"></i></button>
+            </div>-->
+        </div>
+    </section>
+    <section class="content">
+        <img class='img_close' src='resources/img/clone.png' style="display: none">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th style="width: 155px;">入库时间</th>
+                            <th style="width: 50px;">序号</th>
+                            <th>客户</th>
+                            <th>追溯码</th>
+                            <th style="width: 120px;">仓库代码</th>
+                            <th style="width: 50px;">箱数</th>
+                            <th>国家</th>
+                            <th style="width: 155px;">更新时间</th>
+                            <th style="text-align: center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-7">
+                            <div class="fenye" id="page" style="float: right;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="resources/plugins/page/page.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="resources/plugins/bootstrap-select-1.12.4/js/bootstrap-select.min.js"></script>
+    <script src="resources/js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+    <script src="resources/js/jquery.barcode.js" type="text/javascript" charset="utf-8"></script>
+    <script src="resources/plugins/moment/moment.min.js"></script>
+
+    <script>
+        var no;
+        var url;
+        var pageNum = 1;
+
+        function GetRequest() {
+            url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                str = url.substr(1);
+                if (str.indexOf("&") != -1) {
+                    strs = str.split("&");
+                    for (var i = 0; i < strs.length; i++) {
+                        no = theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                        pageNum = no;
+                    }
+                } else {
+                    no = theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+                    pageNum = no;
+                }
+            }
+
+        }
+
+        $(function () {
+            GetRequest();
+            if (url != "") {
+                pageNo(no);
+            }
+            if (url == "") {
+                no = 1;
+                pageNo(no);
+            }
+        });
+
+        function template(data) {
+            var id;
+            //渲染列表
+            $("table tbody").empty();
+            for (var i = 0; i < data.length; i++) {
+                id = data[i].id;
+                var warehouseintime = (data[i].warehouseintime == null || data[i].warehouseintime == "" || data[i].warehouseintime == 'null') ? "" : moment(data[i].warehouseintime).format('YYYY-MM-DD HH:mm:ss');
+                var clientname = data[i].clientname == null ? "-" : data[i].clientname;
+                var logisticsNumber = data[i].logisticsNumber == null ? "-" : data[i].logisticsNumber;
+                var warehouseaddress = data[i].warehouseaddress == null ? "-" : data[i].warehouseaddress;
+                var warehouseid = data[i].warehouseid == null ? "-" : data[i].warehouseid;
+                var boxcount = data[i].boxcount == null ? "-" : data[i].boxcount;
+                var country = data[i].country == null ? "-" : data[i].country;
+                var updatetime = data[i].updatetime == null ? "-" : data[i].updatetime;
+                $("table tbody").append("<tr class='pointer'>"
+                    + "   <td>" + warehouseintime + "</td>"
+                    + "   <td>" + id + "</td>"
+                    + "   <td>" + clientname + "</td>"
+                    + "   <td>" + logisticsNumber + "</td>"
+                    + "   <td>" + warehouseid + "</td>"
+                    + "   <td>" + boxcount + "</td>"
+                    + "   <td>" + country + "</td>"
+                    + "   <td>" + updatetime + "</td>"
+                    + "   <td><a  href='javascript:;'  onclick='toUpdate(" + id + ")'><span>查看&nbsp;&nbsp;</span></a>"
+                    + "   <a  href='javascript:;'  onclick='toClaim(" + id + ")'><span>认领</span></a></td>"
+                    + "   </tr>");
+            }
+        }
+
+        function pageNo(no) {
+            $.ajax({
+                type: "get",
+                url: "cargo/getcargologisticslist",
+                data: {
+                    pagesize: 10,
+                    pageno: no,
+                    cltype: 1,
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "post",
+                                url: "cargo/getcargologisticslist",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex,
+                                    cltype: 1,
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    template(data.data.resultList);
+                                    pageNum = pageIndex;
+                                },
+                                error: function () {
+                                    swal("跳转失败！", "跳转失败。", "error");
+                                }
+                            })
+                        }
+                    });
+                    template(data.data.resultList);
+                }
+            });
+        }
+
+        function findall() {
+            var customer = $("#customer").val();
+            var country = $("#country").val();
+            $.ajax({
+                type: "post",
+                url: "cargo/getcargologisticslist",
+                data: {
+                    pagesize: 10,
+                    pageno: 1,
+                    customer: customer,
+                    country: country,
+                    cltype: 1,
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "post",
+                                url: "cargo/getcargologisticslist",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex,
+                                    customer: customer,
+                                    country: country,
+                                    cltype: 1,
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    //if(data.statusCode == 200){
+                                    template(data.data.resultList);
+                                    // }
+                                }
+                            })
+                        }
+                    });
+                    template(data.data.resultList);
+                }
+            })
+        }
+
+        function toUpdate(id) {
+            var pagemsg = "toppanhuo?pageNum=" + pageNum;
+            location.href = "toppanhuoupdate" + "?id=" + id + "&pagemsg=" + pagemsg;
+        }
+
+        //认领
+        function toClaim(id) {
+            swal({
+                    title: "提示！",
+                    text: "是否确定认领此任务?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "认领!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.ajax({
+                        type: "get",
+                        url: "/claim/" + id + "/claimcargologistics",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.statusCode == 0) {
+                                location.reload();
+                            }
+                        },
+                        error: function (data) {
+                            swal("跳转失败！", data.message, "error");
+                        }
+                    })
+
+                });
+        }
+    </script>
+</div>
+
+</body>
+
+</html>

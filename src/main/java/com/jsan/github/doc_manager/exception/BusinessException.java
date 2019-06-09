@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
  * @author xuhua
  * @since 1.0.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BusinessException extends RuntimeException {
 

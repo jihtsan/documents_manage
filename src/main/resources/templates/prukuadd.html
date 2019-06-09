@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+    <link rel="stylesheet" href="resources/plugins/dist/css/selectize.default.css">
+    <link rel="stylesheet" href="resources/plugins/showloading/showLoading.css">
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            添加入库
+            <small></small>
+        </h1>
+        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;margin-left: 20px;"
+                onclick="save();">
+            保存
+        </button>
+        <!--<button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;margin-left: 20px;display:none;" onclick="toend();" id="toend">
+            结束记时
+        </button>
+        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;margin-left: 20px;" onclick="tostart();" id="tostart">
+            开始计时
+        </button>-->
+    </section>
+    <section class="content">
+        <img class='img_close' src='resources/img/clone.png' style="display: none">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">入库信息</h3>
+                        <input id="hid" type="hidden">
+                        <input id="htime" type="hidden">
+                        <!--<ul class="nav navbar-right panel_toolbox">
+                            <li><a href="tocargolist" style="margin-right:10px;"><i class="fa fa-arrow-left"></i>返回</a>
+                            </li>
+                        </ul>-->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">仓库代码</span>
+                                    <div style="height: 34px;"><input id="warehouseid" placeholder="请填写仓库代码"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">客户</span>
+                                    <div style="height: 34px;"><input id="clientname" placeholder="请填写客户"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">国家</span>
+                                    <div style="height: 34px;"><input id="country" placeholder="请填写国家"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">地址</span>
+                                    <input type="text" class="form-control" placeholder="请填写地址" id="address">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">追溯码</span>
+                                    <input type="text" class="form-control" placeholder="请填写追溯码" id="logisticsNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">运输方式</span>
+                                    <select id="gotype" class="form-control">
+                                        <option value="">请选择运输方式</option>
+                                        <option value="1">空运</option>
+                                        <option value="2">海运</option>
+                                        <option value="3">铁运</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-header">
+                        <h3 class="box-title">箱子信息</h3>
+                        <div style="float: right;" class="col-md-11">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="btndel"><a><li
+                                            class="fa fa-minus"></li></a></button>
+                                </span>
+                                <input type="text" class="form-control" style="width:60px;text-align: center;"
+                                       id="boxcount" value="0" readonly>
+                                <span class="input-group-btn" style="float:left;">
+                                    <button class="btn btn-default" type="button" id="btnadd"><a><li
+                                            class="fa fa-plus"></li></a></button>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="form-group">
+                            <table class="table" id="tb0">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;">复制</th>
+                                    <th style="text-align: center;width: 100px;">序号</th>
+                                    <th style="text-align: center;">FBA号码</th>
+                                    <th style="text-align: center;">单箱重量（KG）</th>
+                                    <th style="text-align: center;width: 260px;">单箱尺寸（CM）</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--<div style="padding-top:15px;">
+                            <button onclick="chosebtn();" class="form-control" id="closebtn">点击确认</button>
+                        </div>-->
+                        <div style="padding-top:15px;">
+                            <button onclick="chosebtn();" class="form-control" style="display:none;" onclick="toend();"
+                                    id="toend">结束计时
+                            </button>
+                        </div>
+                        <div style="padding-top:15px;">
+                            <button onclick="chosebtn();" class="form-control" onclick="tostart();" id="tostart">开始计时
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="resources/plugins/dist/js/standalone/selectize.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="resources/plugins/showloading/jquery.showLoading.min.js"></script>
+    <script src="resources/plugins/layer-v3.0.3/layer/layer.js"></script>
+    <script src="resources/plugins/moment/moment.min.js"></script>
+    <script th:inline="javascript">//引用
+    var control;
+
+    $(function () {
+        $.ajax({
+            url: "warehouseclient/warehouse",
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                if (data.statusCode == 0) {
+                    var list = [];
+                    for (var i = 0; i < data.data.length; i++) {
+                        var demolist = {"id": data.data[i].id, "name": data.data[i].warehouseid};
+                        list.push(demolist);
+                    }
+                    $('#warehouseid').selectize({
+                        createOnBlur: true,
+                        maxItems: 1,
+                        valueField: 'id',
+                        labelField: 'name',
+                        searchField: 'name',
+                        options: list,
+                        create: true
+                    });
+                }
+            }
+        });
+
+        $.ajax({
+            url: "warehouseclient/client",
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                if (data.statusCode == 0) {
+                    var list = [];
+                    for (var i = 0; i < data.data.length; i++) {
+                        var demolist = {"id": data.data[i].id, "name": data.data[i].clientname};
+                        list.push(demolist);
+                    }
+                    $('#clientname').selectize({
+                        createOnBlur: true,
+                        maxItems: 1,
+                        valueField: 'id',
+                        labelField: 'name',
+                        searchField: 'name',
+                        options: list,
+                        create: true
+                    });
+                }
+            }
+        });
+
+        var countrylist = [{"id": "AO", "name": "安哥拉"},
+            {"id": "AL", "name": "阿尔巴尼亚"},
+            {"id": "DZ", "name": "阿尔及利亚"},
+            {"id": "AR", "name": "阿根廷"},
+            {"id": "AM", "name": "亚美尼亚"},
+            {"id": "AU", "name": "澳大利亚"},
+            {"id": "AT", "name": "奥地利"},
+            {"id": "AZ", "name": "阿塞拜疆"},
+            {"id": "BH", "name": "巴林"},
+            {"id": "BD", "name": "孟加拉国"},
+            {"id": "BY", "name": "白俄罗斯"},
+            {"id": "BE", "name": "比利时"},
+            {"id": "BO", "name": "玻利维亚"},
+            {"id": "BR", "name": "巴西"},
+            {"id": "BN", "name": "文莱"},
+            {"id": "BG", "name": "保加利亚"},
+            {"id": "CA", "name": "加拿大"},
+            {"id": "CL", "name": "智利"},
+            {"id": "CN", "name": "中国"},
+            {"id": "CO", "name": "哥伦比亚"},
+            {"id": "CR", "name": "哥斯达黎加"},
+            {"id": "CY", "name": "塞浦路斯"},
+            {"id": "CZ", "name": "捷克"},
+            {"id": "DK", "name": "丹麦"},
+            {"id": "EG", "name": "埃及"},
+            {"id": "SV", "name": "萨尔瓦多"},
+            {"id": "EE", "name": "爱沙尼亚"},
+            {"id": "FI", "name": "芬兰"},
+            {"id": "FR", "name": "法国"},
+            {"id": "GE", "name": "格鲁吉亚"},
+            {"id": "DE", "name": "德国"},
+            {"id": "GR", "name": "希腊"},
+            {"id": "HU", "name": "匈牙利"},
+            {"id": "IS", "name": "冰岛"},
+            {"id": "IN", "name": "印度"},
+            {"id": "ID", "name": "印度尼西亚"},
+            {"id": "IE", "name": "爱尔兰"},
+            {"id": "IL", "name": "以色列"},
+            {"id": "IT", "name": "意大利"},
+            {"id": "JP", "name": "日本"},
+            {"id": "JO", "name": "约旦"},
+            {"id": "KZ", "name": "哈萨克斯坦"},
+            {"id": "KR", "name": "韩国"},
+            {"id": "KW", "name": "科威特"},
+            {"id": "KG", "name": "吉尔吉斯坦"},
+            {"id": "LV", "name": "拉脱维亚"},
+            {"id": "LB", "name": "黎巴嫩"},
+            {"id": "LT", "name": "立陶宛"},
+            {"id": "LU", "name": "卢森堡"},
+            {"id": "MY", "name": "马来西亚"},
+            {"id": "MV", "name": "马尔代夫"},
+            {"id": "MT", "name": "马耳他"},
+            {"id": "MU", "name": "毛里求斯"},
+            {"id": "MX", "name": "墨西哥"},
+            {"id": "MD", "name": "摩尔多瓦"},
+            {"id": "NL", "name": "荷兰"},
+            {"id": "NZ", "name": "新西兰"},
+            {"id": "NG", "name": "尼日利亚"},
+            {"id": "NO", "name": "挪威"},
+            {"id": "OM", "name": "阿曼"},
+            {"id": "PK", "name": "巴基斯坦"},
+            {"id": "PE", "name": "秘鲁"},
+            {"id": "PH", "name": "菲律宾"},
+            {"id": "PL", "name": "波兰"},
+            {"id": "PT", "name": "葡萄牙"},
+            {"id": "PR", "name": "波多黎各"},
+            {"id": "QA", "name": "卡塔尔"},
+            {"id": "RO", "name": "罗马尼亚"},
+            {"id": "RU", "name": "俄罗斯"},
+            {"id": "SA", "name": "沙特阿拉伯"},
+            {"id": "SG", "name": "新加坡"},
+            {"id": "SK", "name": "斯洛伐克"},
+            {"id": "SI", "name": "斯洛文尼亚"},
+            {"id": "ZA", "name": "南非"},
+            {"id": "ES", "name": "西班牙"},
+            {"id": "LK", "name": "斯里兰卡"},
+            {"id": "SE", "name": "瑞典"},
+            {"id": "CH", "name": "瑞士"},
+            {"id": "TJ", "name": "塔吉克斯坦"},
+            {"id": "TH", "name": "泰国"},
+            {"id": "TR", "name": "土耳其"},
+            {"id": "TM", "name": "土库曼斯坦"},
+            {"id": "UA", "name": "乌克兰"},
+            {"id": "AE", "name": "阿拉伯联合酋长国"},
+            {"id": "GB", "name": "英国"},
+            {"id": "US", "name": "美国"},
+            {"id": "UY", "name": "乌拉圭"},
+            {"id": "UZ", "name": "乌兹别克斯坦"},
+            {"id": "VE", "name": "委内瑞拉"},
+            {"id": "VN", "name": "越南"},
+            {"id": "YE", "name": "也门"},
+            {"id": "AO", "name": "安哥拉"},
+            {"id": "AL", "name": "阿尔巴尼亚"},
+            {"id": "DZ", "name": "阿尔及利亚"},
+        ];
+
+        var $select = $('#country').selectize({
+            createOnBlur: true,
+            maxItems: 1,
+            valueField: 'name',
+            labelField: 'name',
+            searchField: 'id',
+            options: countrylist,
+            create: true
+        });
+        control = $select[0].selectize;
+    });
+
+    $("#btndel").on("click", function () {
+        var count = $("#boxcount").val();
+        if (count <= 0) {
+            return;
+        }
+        var sum = -1;
+        sum += parseInt(count);
+        $("#boxcount").val(sum);
+        $("#tb0 tbody tr").eq(sum).remove();
+    });
+
+    $("#btnadd").on("click", function () {
+        var count = $("#boxcount").val();
+        var sum = 1;
+        sum += parseInt(count);
+        $("#boxcount").val(sum);
+        $("#tb0 tbody").append('<tr>' +
+            '<td><button class="btn" onclick="fuzhi(' + count + ');">复制</button></td>' +
+            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写序号" value="' + sum + '"></td>' +
+            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写FBA号码" onkeypress="copyfba(' + count + ')"></td>' +
+            '<td style="padding-right: 20px;"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写单箱重量（KG）"></td>' +
+            '<td><div class="row">' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;"></div>' +
+            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;"></div>' +
+            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;"></div></div></td>' +
+            '</tr>');
+        $("#tb0 tbody").children("tr").eq(count).find("td").eq(2).find("input").focus();
+    });
+
+    $("#warehouseid").on("change", function () {
+        var wid = $("#warehouseid").val();
+        $.ajax({
+            url: "warehouseclient/" + wid + "/warehouse",
+            type: "get",
+            success: function (data) {
+                var address = data.data.address == null ? "" : data.data.address;
+                var country = data.data.country == null ? "" : data.data.country;
+                $("#address").val(address);
+                control.setValue([country]);
+            }
+        });
+    });
+
+    function save() {
+        var idd = $("#hid").val();
+        var clientname = $("#clientname").val();
+        var address = $("#address").val();
+        var country = $("#country").val();
+        var warehouseid = $("#warehouseid").val();
+        var destinationid = "";
+        var logisticsNumber = $("#logisticsNumber").val();
+        var wtext = $(".has-items>.item").eq(0).text();
+        var ctext = $(".has-items>.item").eq(1).text();
+        var boxcount = $("#boxcount").val();
+        var gotype = $("#gotype").val();
+        if (wtext == warehouseid) {
+            warehouseid = "";
+        }
+        if (ctext == clientname) {
+            clientname = "";
+        }
+        var trList = $("#tb0 tbody").children("tr");
+        var boxlist = [];
+        for (var i = 0; i < trList.length; i++) {
+            var id = $("#tb0 tbody").children("tr").eq(i).attr("data-id")
+            var tdArr = trList.eq(i).find("td");
+            var sort = tdArr.eq(1).find('input').val();
+            var fba = tdArr.eq(2).find('input').val();
+
+            var weight = tdArr.eq(3).find('input').val();
+            var boxlength = tdArr.eq(4).find('input').eq(0).val();
+            var boxwidth = tdArr.eq(4).find('input').eq(1).val();
+            var boxhigh = tdArr.eq(4).find('input').eq(2).val();
+            var place = tdArr.eq(5).find('input').val();
+            if (fba != null && fba != "") {
+                boxlist.push({
+                    "id": id,
+                    "boxlength": boxlength,
+                    "boxwidth": boxwidth,
+                    "boxhigh": boxhigh,
+                    "sort": sort,
+                    "weight": weight,
+                    "place": place,
+                    "fba": fba,
+                })
+            }
+
+        }
+
+        var cargoLogisticsViewModel = {
+            id: idd,
+            clientname: ctext,
+            logisticsNumber: logisticsNumber,
+            warehouseid: wtext,
+            warehouseaddress: address,
+            country: country,
+            boxcount: boxcount,
+            wid: warehouseid,
+            cid: clientname,
+            gotype: gotype,
+            aggressmessage: 1
+
+        };
+        cargoLogisticsViewModel.boxlist = boxlist;
+        console.log(JSON.stringify(cargoLogisticsViewModel));
+        $.ajax({
+            url: "cargo/createcargolofistics",
+            type: "post",
+            data: JSON.stringify(cargoLogisticsViewModel),
+            contentType: "application/json",
+            success: function (data) {
+                if (data.statusCode == 0) {
+                    location.href = "topruku";
+                } else {
+                    alert( data.message);
+                }
+            }
+        });
+    }
+
+    function fuzhi(count) {
+        //alert("count:"+count)
+        var cou = $("#boxcount").val();
+        //alert("cou:"+cou)
+        var sum = 1;
+        sum += parseInt(cou);
+        //alert("sum:"+sum)
+        $("#boxcount").val(sum);
+        var id = $("#tb0 tbody").children("tr").eq(count).attr("data-id")
+        var tdArr = $("#tb0 tbody").children("tr").eq(count).find("td");
+        var fba = tdArr.eq(2).find('input').val();
+        var weight = tdArr.eq(3).find('input').val();
+        var size1 = tdArr.eq(4).find('input').eq(0).val();
+        var size2 = tdArr.eq(4).find('input').eq(1).val();
+        var size3 = tdArr.eq(4).find('input').eq(2).val();
+        var place = tdArr.eq(5).find('input').val();
+        $("#tb0 tbody").append('<tr data-id="' + id + '">' +
+            '<td><button class="btn" onclick="fuzhi(' + cou + ');">复制</button></td>' +
+            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写序号" value="' + sum + '"></td>' +
+            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写FBA号码" value="' + fba + '" onkeypress="copyfba(' + cou + ')"></td>' +
+            '<td style="padding-right: 20px;"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写单箱重量（KG）" value="' + weight + '"></td>' +
+            '<td><div class="row">' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size1 + '"></div>' +
+            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size2 + '"></div>' +
+            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size3 + '"></div></div></td>' +
+            '</tr>');
+    }
+
+    /* function chosebtn(){
+         alert(111)
+         $("body").showLoading();
+         $("#loading-indicator-undefined").on("click",function(){
+             alert(111)
+         })
+     }*/
+
+    function copyfba(scount) {
+        //alert("scount:"+scount)
+        var xxxx;
+        if (window.event) // IE8 及更早IE版本
+        {
+            xxxx = event.keyCode;
+        }
+        else if (event.which) // IE9/Firefox/Chrome/Opera/Safari
+        {
+            xxxx = event.which;
+        }
+        if (xxxx != 13) {
+            return;
+        }
+        var count = $("#boxcount").val();
+        var sum = 1;
+        sum += parseInt(count);
+        $("#boxcount").val(sum);
+        $("#tb0 tbody").append('<tr>' +
+            '<td><button class="btn" onclick="fuzhi(' + count + ');">复制</button></td>' +
+            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写序号" value="' + sum + '"></td>' +
+            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写FBA号码" onkeypress="copyfba(' + count + ')"></td>' +
+            '<td style="padding-right: 20px;"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写单箱重量（KG）"></td>' +
+            '<td><div class="row">' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;"></div>' +
+            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;"></div>' +
+            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;"></div></div></td>' +
+            '</tr>');
+        $("#tb0 tbody").children("tr").eq(count).find("td").eq(2).find("input").focus();
+    }
+
+    /*var sss = 0;
+    var statusapp = 0;
+    var intervallist = [];
+    var interval0;
+    function chosebtn() {
+        //return layer.msg('努力中...', {icon: 16,shade: [0.5, '#f5f5f5'],scrollbar: false,offset: '0px', time:100000}) ;
+        var index = layer.load(1, {
+            shade: [0.2, '#fff'], //0.1透明度的白色背景
+            shadeClose: true
+        });
+        var idd = $("#hid").val();
+        var clientname = $("#clientname").val();
+        var address = $("#address").val();
+        var country = $("#country").val();
+        var warehouseid = $("#warehouseid").val();
+        var destinationid = "";
+        var logisticsNumber = $("#logisticsNumber").val();
+        var wtext = $(".has-items>.item").eq(0).text();
+        var ctext = $(".has-items>.item").eq(1).text();
+        var boxcount = $("#boxcount").val();
+        var gotype = $("#gotype").val();
+        if (wtext == warehouseid) {
+            warehouseid = "";
+        }
+        if (ctext == clientname) {
+            clientname = "";
+        }
+        var trList = $("#tb0 tbody").children("tr");
+        var boxlist = [];
+        for (var i = 0; i < trList.length; i++) {
+            var id = $("#tb0 tbody").children("tr").eq(i).attr("data-id")
+            var tdArr = trList.eq(i).find("td");
+            var sort = tdArr.eq(1).find('input').val();
+            var fba = tdArr.eq(2).find('input').val();
+//            if(fba==null||fba==""){
+//                layer.msg("请输入fba");
+//                return
+//            }
+            var weight = tdArr.eq(3).find('input').val();
+            weight = weight == "" ? 0 : weight;
+            var boxlength = tdArr.eq(4).find('input').eq(0).val();
+            boxlength = boxlength == "" ? 0 : boxlength;
+            var boxwidth = tdArr.eq(4).find('input').eq(1).val();
+            boxwidth = boxwidth == "" ? 0 : boxwidth;
+            var boxhigh = tdArr.eq(4).find('input').eq(2).val();
+            boxhigh = boxhigh == "" ? 0 : boxhigh;
+            var place = tdArr.eq(5).find('input').val();
+            var addressmark = tdArr.eq(6).find('input').val();
+            if (fba != "") {
+                boxlist.push({
+                    "id": id,
+                    "boxlength": boxlength,
+                    "boxwidth": boxwidth,
+                    "boxhigh": boxhigh,
+                    "sort": sort,
+                    "weight": weight,
+                    "place": place,
+                    "fba": fba,
+                });
+            }
+        }
+        var cargoLogisticsViewModel = {
+            id: idd,
+            clientname: ctext,
+            logisticsNumber: logisticsNumber,
+            warehouseid: wtext,
+            warehouseaddress: address,
+            country: country,
+            boxcount: boxcount,
+            wid: warehouseid,
+            cid: clientname,
+            gotype: gotype
+        };
+        cargoLogisticsViewModel.boxlist = boxlist;
+        console.log(JSON.stringify(cargoLogisticsViewModel));
+        $.ajax({
+            url: "cargo/createcargolofistics",
+            type: "post",
+            data: JSON.stringify(cargoLogisticsViewModel),
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                console.log("数据复制成功了...")
+                console.log(data)
+                $("#hid").val(data.data)
+                var trList = $("#tb0 tbody").children("tr");
+                var lists = [];
+                for (var l = 0; l < trList.length; l++) {
+                    var tdArr = trList.eq(l).find("td");
+                    var fba = tdArr.eq(2).find('input').val();
+                    lists.push(fba)
+                }
+
+                var model = {
+                }
+                model.list = lists;
+
+                $.ajax({
+                    url: "claim/findinfbyfbalist",
+                    type: "post",
+                    data: JSON.stringify(model),
+                    contentType: "application/json",
+                    async: false,
+                    success: function (datas) {
+                        debugger;
+                        console.log("-----------")
+                        console.log(datas)
+                        if (datas.statusCode == 0) {
+                            var trList = $("#tb0 tbody").children("tr");
+                            for (var l = 0; l < trList.length; l++) {
+                                debugger;
+                                var tdArr = trList.eq(l).find("td");
+                                var fba = tdArr.eq(2).find('input').val();
+                                for (var k = 0; k < datas.data.length; k++) {
+                                    debugger
+                                    if (fba == datas.data[k].fba) {
+                                        tdArr.eq(3).find('input').val(datas.data[k].weight)
+                                        tdArr.eq(4).find('input').eq(0).val(datas.data[k].boxlength)
+                                        tdArr.eq(4).find('input').eq(1).val(datas.data[k].boxwidth)
+                                        tdArr.eq(4).find('input').eq(2).val(datas.data[k].boxhigh)
+                                        tdArr.eq(5).find('input').val(datas.data[k].place)
+                                    }
+                                }
+
+                            }
+                        }
+
+
+                        $(".layui-layer-shade").on("click",function(){
+                            statusapp = 1;
+                        })
+
+                        var trList = $("#tb0 tbody").children("tr");
+                        var len = trList.size();
+                        for (var l = 0; l < trList.length; l++) {
+                            var tdArr = trList.eq(l).find("td");
+                            var weight = tdArr.eq(3).find('input').val();
+                            if(weight==""||weight==0) {
+                                len--;
+                                interval0 = setInterval(_foo(fba,0),2000)
+                                return;
+                            }
+                        }
+
+                        if(datas.statusCode==0&&len==0){
+                            statusapp = 1;
+                            layer.msg('数据全部检索通过...');
+                            layer.closeAll();
+                        }
+                    }
+                })
+            }
+        });
+    }
+
+
+    function foo(fba, sta) {
+        //alert("fba:"+fba)
+        //debugger;
+        if(statusapp==1){
+            clearInterval(interval0)
+            return
+        }
+
+        layer.msg('数据检索出现问题，正在重新检索...', {
+            time: 1000, //20s后自动关闭
+        });
+
+        var trList = $("#tb0 tbody").children("tr");
+        var len = trList.size();
+        for (var i = 0; i < trList.length; i++) {
+            var tdArr = trList.eq(i).find("td");
+            var weight = tdArr.eq(3).find('input').val();
+            if(weight!=""&&weight!=0){
+                len--;
+            }
+        }
+        if(len==0){
+            statusapp = 1;
+            layer.msg('数据全部检索通过...');
+            layer.closeAll();
+            return
+        }
+        var trList = $("#tb0 tbody").children("tr");
+        var lists = [];
+        for (var l = 0; l < trList.length; l++) {
+            var tdArr = trList.eq(l).find("td");
+            var fba = tdArr.eq(2).find('input').val();
+            lists.push(fba)
+        }
+
+        var model = {
+        }
+        model.list = lists;
+
+        $.ajax({
+            url: "claim/findinfbyfbalist",
+            type: "post",
+            data: JSON.stringify(model),
+            contentType: "application/json",
+            async: false,
+            success: function (datas) {
+                console.log("重新赋值")
+                console.log(datas)
+                if (datas.statusCode == 0) {
+                    debugger;
+                    var trList = $("#tb0 tbody").children("tr");
+                    for (var l = 0; l < trList.length; l++) {
+                        debugger;
+                        var tdArr = trList.eq(l).find("td");
+                        var fba = tdArr.eq(2).find('input').val();
+                        for (var k = 0; k < datas.data.length; k++) {
+                            debugger;
+                            if (fba == datas.data[k].fba) {
+                                tdArr.eq(3).find('input').val(datas.data[k].weight)
+                                tdArr.eq(4).find('input').eq(0).val(datas.data[k].boxlength)
+                                tdArr.eq(4).find('input').eq(1).val(datas.data[k].boxwidth)
+                                tdArr.eq(4).find('input').eq(2).val(datas.data[k].boxhigh)
+                                tdArr.eq(5).find('input').val(datas.data[k].place)
+                            }
+                        }
+
+                    }
+                }
+            }
+        })
+    }
+
+    function _foo(id, i) {
+        return function () {
+            foo(id, i);
+        }
+    }*/
+
+    /*$(function(){
+        setInterval(_foo(12),5000);
+    })*/
+    function tostart() {
+        var date1 = new Date();
+        var val = $("#htime").val();
+        if (val == null || val == "") {
+            $("#htime").val(date1);
+        }
+
+        $("#tostart").hide();
+        $("#toend").show();
+        //alert(moment(date1).format('YYYY-MM-DD HH:mm:ss'))
+    }
+
+    function toend() {
+        $("#tostart").show();
+        $("#toend").hide();
+        var date2 = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+        var date1 = moment($("#htime").val()).format('YYYY-MM-DD HH:mm:ss');
+        $.ajax({
+            url: "claim/getboxbytime",
+            type: "post",
+            dataType: "json",
+            data: {
+                startime: date1,
+                endtime: date2
+            },
+            success: function (data) {
+                console.log("数据")
+                console.log(data)
+                $("#tb0 tbody").empty();
+                if (data.statusCode == 0) {
+                    //var s = $("#boxcount").val();
+                    for (var i = 0; i < data.data.length; i++) {
+                        var id = data.data[i].id;
+                        //var sort = data.data[i].fsort==null?"":data.data[i].fsort;
+                        var weight = data.data[i].fweight == null ? "" : data.data[i].fweight;
+                        var size1 = data.data[i].fboxlength == null ? "" : data.data[i].fboxlength;
+                        var size2 = data.data[i].fboxwidth == null ? "" : data.data[i].fboxwidth;
+                        var size3 = data.data[i].fboxhigh == null ? "" : data.data[i].fboxhigh;
+                        var fba = data.data[i].ffba == null ? "" : data.data[i].ffba;
+                        var sum = parseInt(1) + parseInt(i);
+                        $("#tb0 tbody").append('<tr data-id >' +//data-id="'+id+'"
+                            '<td><button class="btn" onclick="fuzhi(' + i + ');">复制</button></td>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写序号" value="' + sum + '"></td>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写FBA号码" value="' + fba + '"></td>' +
+                            '<td style="padding-right: 20px;"><input type="text" class="form-control" style="padding:0 5px;border: 0px;text-align: center;" placeholder="请填写单箱重量（KG）" value="' + weight + '"></td>' +
+                            '<td><div class="row">' +
+                            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size1 + '"></div>' +
+                            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size2 + '"></div>' +
+                            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size3 + '"></div></div></td>' +
+                            '</tr>');
+                        $("#boxcount").val(sum);
+                    }
+                }
+            }
+        });
+    }
+
+    </script>
+</div>
+</body>
+</html>

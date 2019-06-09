@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>品名</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>品名</h1>
+        <div style="float: right;margin-top: -25px;">
+            <div style="float: left;padding-right:10px;">
+                <div>
+                    <div style="float:left;"><input class="form-control" placeholder="请输入中文品名" id="customer"></div>
+                    <div style="float:left;">
+                        <button class="btn btn-default"><a onclick="findall();"><i class="fa fa-search"></i></a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div style="float: left;">
+                <button class="btn btn-default"><a href="topinmingadd"><i class="fa fa-plus"></i></a></button>
+            </div>
+            <!--<div style="float: left;">
+                <button class="btn btn-default"><i class="fa fa-file-text-o"></i></button>
+            </div>-->
+        </div>
+    </section>
+    <section class="content">
+        <img class='img_close' src='resources/img/clone.png' style="display: none">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>中文品名</th>
+                            <th>英文品名</th>
+                            <th>中国HS</th>
+                            <th>荷兰HS</th>
+                            <th>关税税率</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-7">
+                            <div class="fenye" id="page" style="float: right;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="resources/plugins/page/page.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        var no;
+        var url;
+        var pageNum = 1;
+
+        function GetRequest() {
+            url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                str = url.substr(1);
+                if (str.indexOf("&") != -1) {
+                    strs = str.split("&");
+                    for (var i = 0; i < strs.length; i++) {
+                        no = theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                        pageNum = no;
+                    }
+                } else {
+                    no = theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+                    pageNum = no;
+                }
+            }
+
+        }
+
+        $(function () {
+            GetRequest();
+            if (url != "") {
+                pageNo(no);
+            }
+            if (url == "") {
+                no = 1;
+                pageNo(no);
+            }
+        });
+
+        function template(data) {
+            var id;
+            //渲染列表
+            $("table tbody").empty();
+            for (var i = 0; i < data.length; i++) {
+                id = data[i].id;
+                var chinesename = (data[i].chinesename == null || data[i].chinesename == "") ? "" : data[i].chinesename;
+                var englishname = (data[i].englishname == null || data[i].englishname == "") ? "" : data[i].englishname;
+                var chinseshs = (data[i].chinseshs == null || data[i].chinseshs == "") ? "" : data[i].chinseshs;
+                var hlhs = (data[i].hlhs == null || data[i].hlhs == "") ? "" : data[i].hlhs;
+                var duty = (data[i].duty == null || data[i].duty == "") ? "" : data[i].duty;
+                $("table tbody").append("<tr class='pointer'>"
+                        + "   <td>" + chinesename + "</td>"
+                        + "   <td>" + englishname + "</td>"
+                        + "   <td>" + chinseshs + "</td>"
+                        + "   <td>" + hlhs + "</td>"
+                        + "   <td>" + duty + "</td>"
+                        + "   <td><a  href='javascript:;'  onclick='toUpdate(" + id + ")'><span>查看&nbsp;&nbsp;</span></a><a  href='javascript:;'  onclick='toDelete(" + id + ")'><span>删除&nbsp;&nbsp;</span></a></td>"
+                        + "   </tr>");
+            }
+        }
+
+        function pageNo(no) {
+            $.ajax({
+                type: "get",
+                url: "warehouseclient/getcargonamrbypage",
+                data: {
+                    pagesize: 10,
+                    pageno: no
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "get",
+                                url: "warehouseclient/getcargonamrbypage",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    template(data.data.resultList);
+                                    pageNum = pageIndex;
+                                },
+                                error: function () {
+                                    swal("跳转失败！", "跳转失败。", "error");
+                                }
+                            })
+                        }
+                    });
+                    template(data.data.resultList);
+                }
+            });
+        }
+
+        function findall() {
+            var cargoname = $("#customer").val();
+            $.ajax({
+                type: "get",
+                url: "warehouseclient/getcargonamrbypage",
+                data: {
+                    pagesize: 10,
+                    pageno: 1,
+                    cargoname: cargoname
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "get",
+                                url: "warehouseclient/getcargonamrbypage",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex,
+                                    cargoname: cargoname
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    //if(data.statusCode == 200){
+                                    template(data.data.resultList);
+                                    // }
+                                }
+                            })
+                        }
+                    });
+                    template(data.data.resultList);
+                }
+            })
+        }
+
+        function toUpdate(id) {
+            var pagemsg = "topinming?pageNum=" + pageNum;
+            location.href = "topinmingupdate" + "?id=" + id + "&pagemsg=" + pagemsg;
+        }
+
+        function toDelete(id) {
+            $.ajax({
+                url: "warehouseclient/" + id + "/detelecargoname",
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                    location.href = "topinming";
+                }
+            });
+        }
+
+    </script>
+</div>
+
+</body>
+
+</html>

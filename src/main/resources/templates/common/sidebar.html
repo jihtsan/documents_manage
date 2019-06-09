@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/security">
+<head>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+<section class="sidebar" th:fragment="sidebar">
+
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel">
+        <div class="pull-left image">
+            <img th:src="${avatar==null?'resources/img/default.jpg':avatar}" src="resources/img/default.jpg"
+                 style="max-height: 45px" class="img-circle"
+                 alt="头像"/>
+        </div>
+        <div class="pull-left info">
+            <p th:text="${session.CURRENTUSER!=null?session.CURRENTUSER.username:'无法显示'}"></p>
+            <!-- Status -->
+            <a href="javascript:;" id="role"><i class="fa fa-circle text-success"></i>在线 </a>
+        </div>
+    </div>
+    <!-- search form (Optional) -->
+    <form action="#" method="get" class="sidebar-form">
+        <div class="input-group">
+
+        </div>
+    </form>
+    <!-- /.search form -->
+    <ul class="sidebar-menu">
+        <li class="header">菜单</li>
+
+    </ul>
+
+    <script th:inline="javascript">
+
+        $(function () {
+            $.ajax({
+                url: "sidebarmenu",
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.statusCode == 0) {
+                        var parlist = [];
+                        for (var i = 0; i < data.data.length; i++) {
+                            if (data.data[i].parentid == null || data.data[i].parentid == "") {
+                                parlist.push(data.data[i]);
+                            }
+                        }
+
+                        for (var i = 0; i < parlist.length; i++) {
+                            var childlist = [];
+                            for (var j = 0; j < data.data.length; j++) {
+                                if (parlist[i].id == data.data[j].parentid) {
+                                    childlist.push(data.data[j])
+                                }
+                            }
+                            parlist[i].child = childlist;
+                        }
+
+                        menutemplate(parlist);
+                        $(".sidebar-menu li a").each(function (e) {
+                            if ($(".content-header h1").text().trim() === $(this).text().trim()) {
+                                $(this).parent("li").addClass("active");
+                                $(this).closest(".treeview").addClass("active");
+                            }
+                        })
+                    } else {
+
+                    }
+                }
+            })
+        })
+
+        function menutemplate(data) {
+            var menus = [];
+            var setLi = function (li) {
+                return $(' <li><a href="' + li.url + '" data-menu="' + li.menuName + '"><i class="' + li.icon + '"></i> ' + li.label + '</a></li>')
+            }
+            var setLi1 = function (li) {
+                return $(' <li><a href="' + li.url + '" data-menu="' + li.menuName + '" style="margin-left: 10px;"><i class="' + li.icon + '"></i> ' + li.label + '</a></li>')
+            }
+            var setTree = function (treeData) {
+                var tree = '<li class="treeview">\
+                <a href="javascript:;"><i class="' + treeData.icon + '"></i> ' + treeData.label + '\
+                    <span class="pull-right-container">\
+                    <i class="fa fa-angle-left pull-right"></i>\
+                    </span>\
+                    </a>\
+                    <ul class="treeview-menu">\
+                    </ul>\
+                    </li>'
+                var node = $(tree);
+                for (var j = 0; j < treeData.child.length; j++) {
+                    node.find(".treeview-menu").append(setLi1(treeData.child[j]))
+                }
+                return node;
+            }
+            for (var i = 0; i < data.length; i++) {
+                data[i].label = '<span>' + data[i].label + '</span>'
+                if (data[i].child.length==0) {
+                    menus.push(setLi1(data[i]))
+                } else if (data[i].child != null) {
+                    menus.push(setTree(data[i]))
+                } else {
+                    menus.push(setLi(data[i]))
+                }
+            }
+            $(".sidebar-menu").append(menus)
+
+        }
+
+        /*]]>*/
+    </script>
+
+</section>
+
+
+</body>
+</html>

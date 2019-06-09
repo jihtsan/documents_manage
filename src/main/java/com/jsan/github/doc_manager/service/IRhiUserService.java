@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public interface IRhiUserService extends IService<RhiUser> {
 
-    void login(String account, String password);
+    RhiUser login(String account, String password);
 
     List<RhiUser> retrieveUser(String userName, String nickName);
 

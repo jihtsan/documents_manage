@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>所有货物信息</title>
+    <link rel="stylesheet" href="resources/plugins/dist/css/selectize.default.css">
+    <link rel="stylesheet"
+          href="resources/plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>用户列表</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="row col-md-12">
+                            <label class="" style="line-height: 35px; float: left;">用户名</label>
+                            <div class="col-md-2"><input class="form-control" placeholder="请填写用户名" id="username"></div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary" style="float: right;" onclick="findall();">查询</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table" id="tb0">
+                            <thead>
+                            <tr>
+                                <th style="width: 155px;">用户名</th>
+                                <th style="width: 45px;">昵称</th>
+                                <th style="width: 130px;">头像</th>
+                                <th style="width: 130px;">创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="resources/plugins/page/page.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script th:inline="javascript">//引用
+    $(function () {
+        pageNo();
+    });
+
+
+    function template(data) {
+        var id;
+        //渲染列表
+        $("table tbody").empty();
+        for (var i = 0; i < data.length; i++) {
+            id = data[i].id;
+            var userName = (data[i].userName == null || data[i].userName == "" || data[i].userName == 'null') ? "" :data[i].userName ;
+            var nickName = data[i].nickName == null ? "-" : data[i].nickName;
+            var userFace = data[i].userFace == null ? "-" : data[i].userFace;
+            var createTime = data[i].createTime == null ? "-" : data[i].createTime;
+            $("#tb0 tbody").append("<tr class='pointer'>"
+                + "   <td>" + userName + "</td>"
+                + "   <td>" + nickName + "</td>"
+                + "   <td>" + userFace + "</td>"
+                + "   <td>" + createTime + "</td>"
+                + "   <td><a  href='javascript:;'  onclick='toChangePWD(" + id + ")'><span>修改密码&nbsp;&nbsp;</span></a></td>"
+                + "   </tr>");
+
+        }
+    }
+
+    function pageNo() {
+        $.ajax({
+            type: "get",
+            url: "rhi-user/r_user",
+            data: {
+                user_name: "",
+                nick_name: "",
+            },
+            dataType: "json",
+            success: function (data) {
+                template(data.data);
+            }
+        });
+    }
+
+    function findall() {
+        var username = $("#username").val();
+        $.ajax({
+            type: "get",
+            url: "rhi-user/r_user",
+            data: {
+                user_name: username,
+                nick_name: "",
+            },
+            dataType: "json",
+            success: function (data) {
+                template(data.data);
+            }
+        })
+    }
+
+    function toChangePWD(id) {
+        swal({
+            title: "修改面膜",
+            content: {
+                element: "input",
+                attributes: {
+                    placeholder: "Type your password",
+                    type: "password",
+                    id: "passwd"
+                },
+            },
+            button: {
+                text: "Search!",
+                closeModal: false,
+            },
+        }).then(name => {
+            if (!name) throw null;
+            $.ajax({
+                type: "post",
+                url: "user/changePwd",
+                data: {
+                    "userid": id,
+                    "userpwd": userpwd,
+                },
+                dataType: "json",
+                success: function (data) {
+                    location.reload();
+                },
+                error: function () {
+
+                }
+            })
+        });
+    }
+
+
+    </script>
+</div>
+</body>
+</html>

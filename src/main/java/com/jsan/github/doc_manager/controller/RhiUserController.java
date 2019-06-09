@@ -56,10 +56,9 @@ public class RhiUserController extends BaseController {
     }
 
     @ApiOperation(value = "用户列表", httpMethod = "GET", response = String.class)
-    @RequestMapping(value = "r_user", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "r_user", method = RequestMethod.GET, produces = "application/json")
     public ResponseModel retrieveUser(@RequestParam("user_name") String userName,@RequestParam("nick_name") String nickName) {
-        userService.retrieveUser(userName,nickName);
-        return response("登陆成功");
+        return response(userService.retrieveUser(userName,nickName));
     }
 
 

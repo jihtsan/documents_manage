@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+    <link rel="stylesheet" href="resources/plugins/datatables/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="resources/plugins/bootstrap-select-1.12.4/css/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="resources/plugins/sweetalert/sweetalert.css">
+    <link rel="stylesheet" href="resources/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="resources/plugins/dist/css/selectize.default.css">
+    <link rel="stylesheet" href="resources/plugins/viewer/demo/css/viewer.min.css">
+    <style>
+        /* .form-control[disabled], fieldset[disabled] .form-control{
+             background-color: #fff;
+         }*/
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            查看/编辑核价信息
+            <small></small>
+        </h1>
+        <div class="dropdown" style="float: right;margin-top: -20px;margin-bottom: 5px;margin-right:5px;display: none;"
+             id="toRetract">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                驳回
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="reject">
+                <li data-toggle="modal" data-target="#myModalRetract" data-click="0" data-no="0"><a href="javascript:;">入库</a>
+                </li>
+                <li data-toggle="modal" data-target="#myModalRetract" data-click="0" data-no="1"><a href="javascript:;">盘货</a>
+                </li>
+                <li data-toggle="modal" data-target="#myModalRetract" data-click="0" data-no="2"><a href="javascript:;">审价</a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-primary"
+                style="float: right;margin-top: -20px;margin-bottom: 5px;margin-right:5px;display: none;" id="toSubmit">
+            保存并提交
+        </button>
+        <button class="btn btn-primary"
+                style="float: right;margin-top: -20px;margin-bottom: 5px;margin-right:5px;display: none;" id="toupdate">
+            编辑
+        </button>
+        <button class="btn btn-primary"
+                style="float: right;margin-top: -20px;margin-bottom: 5px;margin-right:5px;display: none;" id="tosave">保存
+        </button>
+        <!--<button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;margin-right:5px;display: none;" id="toDelete">撤回</button>-->
+    </section>
+    <section class="content">
+        <img class='img_close' src='resources/img/clone.png' style="display: none">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">入库信息</h3>
+                        <!--<ul class="nav navbar-right panel_toolbox">
+                            <li><a href="tocargolist" style="margin-right:10px;"><i class="fa fa-arrow-left"></i>返回</a>
+                            </li>
+                        </ul>-->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <input th:value="${hid}" id="hid" type="hidden">
+                        <input th:value="${pagemsg}" id="pagemsg" type="hidden">
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>入库时间</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请选择入库时间"
+                                           id="warehouseintime">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">仓库代码</span>
+                                    <div style="height: 34px;"><input id="warehouseid" placeholder="请填写仓库代码"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">客户</span>
+                                    <div style="height: 34px;"><input id="clientname" placeholder="请填写客户"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">追溯码</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写追溯码"
+                                           id="logisticsNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">国家</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写国家" id="country">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">运输方式</span>
+                                    <select id="gotype" class="form-control disinp">
+                                        <option value="1">空运</option>
+                                        <option value="2">海运</option>
+                                        <option value="3">铁运</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">地址</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写地址" id="address">
+                                </div>
+                            </div>
+                            <div class="row" id="hejia">
+                                <div class="col-md-12 form-group">
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">总重量</span>
+                                            <input type="text" class="form-control disinp disinp2" id="totalweight">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">总泡重</span>
+                                            <input type="text" class="form-control disinp disinp2" id="zongpaozhong">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">关税总欧元金额</span>
+                                            <input type="text" class="form-control disinp disinp2" id="zongguanshui">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 form-group">
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">包税价</span>
+                                            <input type="text" class="form-control disinp" id="baoshui">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">关税总人民币金额</span>
+                                            <input type="text" class="form-control disinp disinp2" id="guanshuir">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">申报重量</span>
+                                            <!--<input type="text" class="form-control disinp" id="zhongliangh">-->
+                                            <select class="form-control disinp" id="zhongliangh">
+                                                <option value="0">总泡重</option>
+                                                <option value="1">实际重量</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 form-group">
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">增值税总欧元金额</span>
+                                            <input type="text" class="form-control disinp disinp2" id="zengshui">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">关税单价</span>
+                                            <input type="text" class="form-control disinp disinp2" id="guanshuidanjia">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">空运成本</span>
+                                            <input type="text" class="form-control disinp" id="kongyun">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 form-group">
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">海外机场杂费</span>
+                                            <input type="text" class="form-control disinp" id="jichang">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">派送成本</span>
+                                            <input type="text" class="form-control disinp" id="paisong">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">总成本</span>
+                                            <input type="text" class="form-control disinp disinp2" id="zongchengben">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 form-group">
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">利润</span>
+                                            <input type="text" class="form-control disinp disinp2" id="lirun">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">核定</span>
+                                            <input type="text" class="form-control disinp" id="heding">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">审核结果</span>
+                                            <input type="text" class="form-control disinp" id="shenhejieguo">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 form-group">
+                                    <div class="col-md-12 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">备注</span>
+                                            <input type="text" class="form-control disinp" id="remark">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <div class="col-md-4 form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">人民币汇率</span>
+                                            <input type="text" class="form-control disinp" id="huilv">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-header">
+                        <button class="btn btn-primary"
+                                style="float: left;margin-top: -25px;margin-bottom: 5px;display: none;" id="jisuan">
+                            计算
+                        </button>
+                    </div>
+                    <div class="box-header">
+                        <h3 class="box-title">箱子信息</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="form-group">
+                            <table class="table" id="tb0">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;">序号</th>
+                                    <th style="text-align: center;">单箱重量（KG）</th>
+                                    <th style="text-align: center;">单箱尺寸（CM）</th>
+                                    <th style="text-align: center;">托盘号</th>
+                                    <th style="text-align: center;">FBA号码</th>
+                                    <th style="text-align: center;">地标</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box-header">
+                        <h3 class="box-title">核价信息</h3>
+                        <div style="float: right;" class="col-md-11" id="boxid">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">折扣率</button>
+                                </span>
+                                <!--<select class="form-control" id="boxcount" style="    width: 10%;">-->
+                                <!--<option value="0.1">1折</option>-->
+                                <!--<option value="0.2">2折</option>-->
+                                <!--<option value="0.3">3折</option>-->
+                                <!--<option value="0.4">4折</option>-->
+                                <!--<option value="0.5">5折</option>-->
+                                <!--<option value="0.6">6折</option>-->
+                                <!--<option value="0.7">7折</option>-->
+                                <!--<option value="0.8">8折</option>-->
+                                <!--<option value="0.9">9折</option>-->
+                                <!--<option value="1">无折扣</option>-->
+                                <!--</select>-->
+                                <input type="text" class="form-control" style="width:60px;text-align: center; "
+                                       id="boxcount" value="1"
+                                >
+                                <button class="btn btn-primary"
+                                        id="math">
+                                    计算申报价格
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="form-group" style="overflow-x: scroll;">
+                            <table class="table" id="tb1" style="table-layout:fixed;">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;width: 150px;">中文品名</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">中国HS</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">英文品名</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">荷兰HS</th>
+                                    <th style="text-align: center;width: 150px;" >关税税率</th>
+                                    <th style="text-align: center;width: 150px;" >关税</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">Air Freight</th>
+                                    <th style="text-align: center;width: 150px;">亚马逊卖价</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">ASIN码</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">Delivery Freight</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">品牌名称</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">品牌授权书</th>
+                                    <th style="text-align: center;width: 150px;">客户申报价格</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">货物评价</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">申报评估</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">链接</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">材质</th>
+                                    <th style="text-align: center;width: 150px;">实际申报价格</th>
+                                    <th style="text-align: center;width: 150px;" >总申报价格</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">总税收</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">增税</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">增税率</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">是否强制认证</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true" data-id="">
+            <div class="modal-dialog" style="margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel1">
+                            品牌授权书
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
+                            <h4 id="word1" align="center" style="display: none;">
+                                您尚未上传品牌授权书
+                            </h4>
+                            <div id="showpic1" align="center" class="disinp1">
+                                <img src="" style="width: 350px;height: 300px;">
+                            </div>
+                            <div class="row" class="disinp1 form-control">
+                                <div class="col-md-8"><input type="file" id="pic1" name="pic1"
+                                                             accept="image/png,image/jpg,image/jpeg"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary disinp1" id="picup1">
+                            上传
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModalRetract" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabelRetract">驳回</h4>
+                    </div>
+                    <div class="modal-body">
+                        <textarea id="rejectremark" style="width:100%;height:200px;"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="confirm();">确认驳回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="resources/plugins/page/page.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="resources/plugins/bootstrap-select-1.12.4/js/bootstrap-select.min.js"></script>
+    <script src="resources/js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+    <script src="resources/js/jquery.barcode.js" type="text/javascript" charset="utf-8"></script>
+    <script src="resources/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="resources/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js"></script>
+    <script src="resources/plugins/dist/js/standalone/selectize.js"></script>
+    <script src="resources/plugins/moment/moment.min.js"></script>
+    <script src="resources/plugins/viewer/demo/js/viewer.min.js"></script>
+    <script th:inline="javascript">//引用
+    var boxlist = [];
+    var namelist = [];
+    var isclick = 0;
+    var number = 0;
+    var type = /*[[${type}]]*/;//从我的认领页面过来
+    var cluid = /*[[${cluid}]]*/;//任务id
+    var hid = /*[[${hid}]]*/;//货物id
+    var shuishou = 0;
+    var guanshui = 0;
+    var hejishuishou = 0;
+
+    $(function () {
+        if (type) {
+            $("#toupdate").show();
+            $("#toRetract").show();
+        }
+
+        $("#reject li").on("click", function () {
+            $(this).attr("data-click", 1);
+        });
+
+        //提交任务
+        $("#toSubmit").on("click", function () {
+            toSubmit();
+        });
+
+        $("#setbox1").hide();
+        $(".disinp").attr("disabled", true);
+        $(".disinp1").hide();
+        $("#boxid").hide();
+        var id = $("#hid").val();
+        $.ajax({
+            url: 'cargo/' + id + '/getcargologisticsbyid',
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                var warehouseaddress = data.data.cl.warehouseaddress == null ? "" : data.data.cl.warehouseaddress;
+                var totalweight = data.data.cl.totalweight == null ? "" : data.data.cl.totalweight;
+                var paozhong = data.data.cl.paozhong == null ? "" : data.data.cl.paozhong;
+                var huilv = data.data.cl.huilv == null ? "" : data.data.cl.huilv;
+                var guanshuiU = data.data.cl.guanshuiU == null ? "" : data.data.cl.guanshuiU;
+                guanshuiU=Math.floor(guanshuiU * 100) / 100
+                var guanshuiR = data.data.cl.guanshuiR == null ? "" : data.data.cl.guanshuiR;
+                guanshuiR=Math.floor(guanshuiR * 100) / 100
+                var zengshuiU = data.data.cl.zengshuiU == null ? "" : data.data.cl.zengshuiU;
+                zengshuiU=Math.floor(zengshuiU * 100) / 100
+                var guanshuidanjia = data.data.cl.guanshuidanjia == null ? "" : data.data.cl.guanshuidanjia;
+                var kongyun = data.data.cl.kongyun == null ? "" : data.data.cl.kongyun;
+                var jicheng = data.data.cl.jicheng == null ? "" : data.data.cl.jicheng;
+                var paisong = data.data.cl.paisong == null ? "" : data.data.cl.paisong;
+                var zongchengben = data.data.cl.zongchengben == null ? "" : data.data.cl.zongchengben;
+                var baoshuijia = data.data.cl.baoshuijia == null ? "" : data.data.cl.baoshuijia;
+                var warehouseintime = (data.data.cl.warehouseintime == null || data.data.cl.warehouseintime == "" || data.data.cl.warehouseintime == 'null') ? "" : moment(data.data.cl.warehouseintime).format('YYYY-MM-DD HH:mm:ss');
+                var lirun = (data.data.cl.lirun == null || data.data.cl.lirun == "" || data.data.cl.lirun == 'null') ? "" : data.data.cl.lirun;
+                var heding = data.data.cl.heding == null ? "" : data.data.cl.heding;
+                var shenhejiaguo = data.data.cl.shenhejiaguo == null ? "" : data.data.cl.shenhejiaguo;
+                var remark = data.data.cl.remark == null ? "" : data.data.cl.remark;
+                var country = data.data.cl.country == null ? "" : data.data.cl.country;
+                var logisticsNumber = data.data.cl.logisticsNumber == null ? "" : data.data.cl.logisticsNumber;
+                var gotype = data.data.cl.gotype == null ? "" : data.data.cl.gotype;
+                var shenbao =data.data.cl.shenbao == null ? "" : data.data.cl.shenbao;
+                $("#address").val(warehouseaddress);
+                $("#country").val(country);
+                $("#warehouseintime").val(warehouseintime);
+                $("#logisticsNumber").val(logisticsNumber);
+                $("#gotype").val(gotype);
+                $("#totalweight").val(totalweight);
+                $("#zongpaozhong").val(paozhong);
+                $("#zongguanshui").val(guanshuiU);
+                $("#huilv").val(huilv);
+                $("#guanshuir").val(guanshuiR);
+                $("#zengshui").val(zengshuiU);
+                $("#guanshuidanjia").val(guanshuidanjia);
+                $("#kongyun").val(kongyun);
+                $("#jichang").val(jicheng);
+                $("#paisong").val(paisong);
+                $("#zongchengben").val(zongchengben);
+                $("#lirun").val(lirun);
+                $("#heding").val(heding);
+                $("#shenhejieguo").val(shenhejiaguo);
+                $("#remark").val(remark);
+                $("#baoshui").val(baoshuijia);
+                $("#huilv").val(huilv);
+                $("#zhongliangh").val(shenbao);
+
+                var list1 = [data.data.cl.wid];
+                setlist1(list1);
+                var list2 = [data.data.cl.cid];
+                list2.push(list2);
+                setlist2(list2);
+
+                $("#td0 tbody").empty();
+                boxlist = data.data.box;
+                for (var i = 0; i < data.data.box.length; i++) {
+                    var sort = data.data.box[i].sort == null ? "" : data.data.box[i].sort;
+                    var weight = data.data.box[i].weight == null ? "" : data.data.box[i].weight;
+                    var size1 = data.data.box[i].boxlength == null ? "" : data.data.box[i].boxlength;
+                    var size2 = data.data.box[i].boxwidth == null ? "" : data.data.box[i].boxwidth;
+                    var size3 = data.data.box[i].boxhigh == null ? "" : data.data.box[i].boxhigh;
+                    var place = data.data.box[i].place == null ? "" : data.data.box[i].place;
+                    var fba = data.data.box[i].fba == null ? "" : data.data.box[i].fba;
+                    var addressmark = data.data.box[i].addressmark == null ? "" : data.data.box[i].addressmark;
+                    $("#tb0 tbody").append('<tr>' +
+                        '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写序号" value="' + sort + '"></td>' +
+                        '<td style="padding-right: 20px;"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写单箱重量（KG）" value="' + weight + '"></td>' +
+                        '<td><div class="row">' +
+                        '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size1 + '"></div>' +
+                        '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                        '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size2 + '"></div>' +
+                        '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                        '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size3 + '"></div></div></td>' +
+                        '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写托盘号" value="' + place + '"></td>' +
+                        '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写FBA号码" value="' + fba + '"></td>' +
+                        '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写地标" value="' + addressmark + '"></td>' +
+                        '</tr>');
+                }
+                $("#tb0 tbody tr td").find("input").attr("disabled", true);
+            }
+        });
+
+        <!-- 获取所有的品名信息 -->
+        $.ajax({
+            url: "cargo/getcargoname",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                console.log("品名表");
+                console.log(data);
+                namelist = data.data;
+                showh();
+            }
+        });
+
+    });
+
+
+    <!-- 根据id获取获取信息 -->
+    function showh() {
+        var id = $("#hid").val();
+        $.ajax({
+            url: "cargo/" + id + "/getcargobyid",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                console.log("核价信息")
+                console.log(data)
+                $("#tb1 > tbody").empty();
+                for (var i = 0; i < data.data.length; i++) {
+                    var id = data.data[i].id;
+                    var airfreight = (data.data[i].airfreight == null || data.data[i].airfreight == "" || data.data[i].airfreight == 0) ? "-" : data.data[i].airfreight;
+                    var amzprice = (data.data[i].amzprice == null || data.data[i].amzprice == "" || data.data[i].amzprice == 0) ? "-" : data.data[i].amzprice;
+                    var asin = data.data[i].asin == null ? "" : data.data[i].asin;
+                    var beliveryfreight = (data.data[i].beliveryfreight == null || data.data[i].beliveryfreight == 0 || data.data[i].beliveryfreight == "") ? "-" : data.data[i].beliveryfreight;
+                    var brand = data.data[i].brand == null ? "" : data.data[i].brand;
+                    var brandc = data.data[i].brandc == null ? "" : data.data[i].brandc;
+                    var declaredvalue = (data.data[i].declaredvalue == null || data.data[i].declaredvalue == 0 || data.data[i].declaredvalue == "") ? "-" : data.data[i].declaredvalue;
+                    var evaluation = (data.data[i].evaluation == null || data.data[i].evaluation == "" || data.data[i].evaluation == 0) ? "-" : data.data[i].evaluation;
+                    var evaluationlevel = (data.data[i].evaluationlevel == null || data.data[i].evaluationlevel == 0 || data.data[i].evaluationlevel == "") ? "-" : data.data[i].evaluationlevel;
+                    var link = data.data[i].link == null ? "" : data.data[i].link;
+                    var material = data.data[i].material == null ? "" : data.data[i].material;
+                    var realdeclaredvalue = (data.data[i].realdeclaredvalue == null || data.data[i].realdeclaredvalue == 0 || data.data[i].realdeclaredvalue == "") ? "-" : data.data[i].realdeclaredvalue;
+                    var totaldeclaredvalue = (data.data[i].totaldeclaredvalue == null || data.data[i].totaldeclaredvalue == 0 || data.data[i].totaldeclaredvalue == "") ? "-" : data.data[i].totaldeclaredvalue;
+                    if (totaldeclaredvalue != "-") {
+                        shuishou = shuishou + totaldeclaredvalue;
+                    }
+                    var totaltex = (data.data[i].totaltex == null || data.data[i].totaltex == 0 || data.data[i].totaltex == "") ? "-" : data.data[i].totaltex;
+                    if (totaltex != "-") {
+                        hejishuishou = hejishuishou + totaltex;
+                    }
+                    var vat = (data.data[i].vat == null || data.data[i].vat == 0 || data.data[i].vat == "" ) ? "-" : data.data[i].vat;
+                    var vatrate = (data.data[i].vatrate == null || data.data[i].vatrate == "" || data.data[i].vatrate == 0) ? "-" : data.data[i].vatrate;
+                    var duty = data.data[i].duty == null ? "" : data.data[i].duty;
+                    var qiangzhi = data.data[i].qiangzhi == null ? "" : data.data[i].qiangzhi;
+                    var dutycount = duty * 100;
+                    duty = duty * 100;
+                    duty = duty + "%"
+                    var totalduty = (data.data[i].totalduty == null || data.data[i].totalduty == "" || data.data[i].totalduty == 0) ? "-" : data.data[i].totalduty;
+                    if (totalduty != "-") {
+                        guanshui = guanshui + totalduty;
+                    }
+                    var boxcount = $("#boxcount").val();
+                    number = boxcount;
+                    if (realdeclaredvalue == "-") {
+                        realdeclaredvalue = "-";
+                    }
+//                    } else {
+//                        var ccvals = amzprice * boxcount;
+//                        realdeclaredvalue = Math.floor(ccvals * 100) / 100;
+//                    }
+                    var starlist = "<select class='form-control'><option value=''>请选择星级</option>" +
+                            "<option value='1'>一星</option><option value='2'>二星</option><option value='3'>三星</option><option value='4'>四星</option><option value='5' selected>五星</option></select>";
+                    var pplist = "<select class='form-control'><option value='' selected >无</option>" +
+                            "<option value='1'>偏高</option><option value='2'>偏低</option><option value='3'>合理</option></select>";
+                    $("#tb1 > tbody").append('<tr data-id="' + id + '">' +
+                        '<td><input class="pinming' + i + '" placeholder="请选择中文品名" onchange="pingm(' + i + ');"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写中国HS"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写英文品名"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写荷兰HS"></td>' +
+                        '<td ><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写关税税率"></td>' +
+                        '<td ><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写关税" value="' + totalduty + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control " style="padding:0px;border: 0px;text-align: center;" placeholder="请填写Air Freight" value="' + airfreight + '"></td>' +
+                        '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写亚马逊卖价" value="' + amzprice + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写ASIN码" value="' + asin + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control " style="padding:0px;border: 0px;text-align: center;" placeholder="请填写Delivery Freight" value="' + beliveryfreight + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写品牌名称" value="' + brand + '"></td>' +
+                        '<td align="center" class="bjhide"><button onclick="findpic(' + i + ');" type="button" class="btn">查看</button><input type="hidden" value="' + brandc + '"></td>' +
+                        '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写客户申报价格" value="' + declaredvalue + '"></td>' +
+                        /*'<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写货物评价" value="' + evaluation + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写申报评估" value="' + evaluationlevel + '"></td>' +*/
+                            '<td class="bjhide">'+starlist+'</td>' +
+                            '<td class="bjhide">'+pplist+'</td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写链接" value="' + link + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写材质" value="' + material + '"></td>' +
+                        '<td><input type="text" class="form-control show1" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写实际申报价格" value="' + realdeclaredvalue + '"></td>' +
+                        '<td ><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写总申报价格" value="' + totaldeclaredvalue + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写总税收" value="' + totaltex + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写增税" value="' + vat + '"></td>' +
+                        '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写增税率" value="' + vatrate + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="" value="' + qiangzhi + '"></td>' +
+                            '</tr>');
+                    var $select = $('.pinming' + i).selectize({
+                        createOnBlur: true,
+                        maxItems: 1,
+                        valueField: 'id',
+                        labelField: 'chinesename',
+                        searchField: 'chinesename',
+                        options: namelist,
+                        create: true
+                    });
+                    var control = $select[0].selectize;
+                    control.setValue([data.data[i].cargonameid]);
+                    control.disable();
+
+                    $("#tb1 tbody").find("tr").eq(i).find("td").eq(0).find("select").find("option[data-id='" + 1 + "']").attr("selected", true)
+                    $("#tb1 tbody").find("tr").eq(i).find("td").eq(13).find("select").find("option[value='" + evaluation + "']").attr("selected", true)
+                    $("#tb1 tbody").find("tr").eq(i).find("td").eq(14).find("select").find("option[value='" + evaluationlevel + "']").attr("selected", true)
+                }
+                $("#tb1 tbody tr td").find("input").attr("disabled", true);
+                $("#tb1 tbody tr td").find("select").attr("disabled", true);
+                $("#guanshui").html(guanshui);
+                $("#shuishou").html(shuishou);
+                $("#hejishuishou").html(hejishuishou);
+
+            }
+        });
+    }
+
+    function setlist1(list1) {
+        $.ajax({
+            url: "warehouseclient/warehouse",
+            type: "get",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.statusCode == 0) {
+                    var list = [];
+                    for (var i = 0; i < data.data.length; i++) {
+                        var demolist = {"id": data.data[i].id, "name": data.data[i].warehouseid};
+                        list.push(demolist);
+                    }
+                    var $select = $('#warehouseid').selectize({
+                        createOnBlur: true,
+                        maxItems: 1,
+                        valueField: 'id',
+                        labelField: 'name',
+                        searchField: 'name',
+                        options: list,
+                        create: true
+                    });
+                    var control = $select[0].selectize;
+                    control.setValue(list1);
+                    control.disable();
+                }
+            }
+        });
+    }
+
+    function setlist2(list2) {
+        $.ajax({
+            url: "warehouseclient/client",
+            type: "get",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data.statusCode == 0) {
+                    var list = [];
+                    for (var i = 0; i < data.data.length; i++) {
+                        var demolist = {"id": data.data[i].id, "name": data.data[i].clientname};
+                        list.push(demolist);
+                    }
+                    var $select = $('#clientname').selectize({
+                        createOnBlur: true,
+                        maxItems: 1,
+                        valueField: 'id',
+                        labelField: 'name',
+                        searchField: 'name',
+                        options: list,
+                        create: true
+                    });
+                    var control = $select[0].selectize;
+                    control.setValue(list2);
+                    control.disable();
+                }
+            }
+        });
+    }
+
+    $('#warehouseintime').datepicker({
+        language: 'zh-CN',
+        format: 'yyyy-mm-dd',
+        autoclose: true
+    });
+
+
+    $("#toupdate").on("click", function () {
+        $("#toSubmit").show();
+        $("#toRetract").hide();
+        $("#toupdate").hide();
+        $("#tosave").show();
+        $(".disinp1").attr("disabled", false);
+        $("#boxid").show();
+        $("#tb1 tbody tr td").find(".show1").attr("disabled", false);
+        $(".bjhide").css("display", "none");
+        $(".disinp1").show();
+        isclick = 1;
+        $("#jisuan").show();
+        $("#hejia").find("input,select").attr("disabled",false);
+        $(".disinp2").attr("disabled",true);
+    });
+
+    function pingm(msg) {
+        var id = $(".pinming" + msg).val();
+        $.ajax({
+            url: "cargo/" + id + "/getcargoname",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                $("#tb1 tbody tr").eq(msg).find("td").eq(1).find("input").val(data.data.chinseshs);
+                $("#tb1 tbody tr").eq(msg).find("td").eq(2).find("input").val(data.data.englishname);
+                $("#tb1 tbody tr").eq(msg).find("td").eq(3).find("input").val(data.data.hlhs);
+                var duty = (data.data.duty == null || data.data.duty == "" || data.data.duty == 0) ? "-" : data.data.duty;
+                duty=Math.floor(duty * 100) / 100
+                $("#tb1 tbody tr").eq(msg).find("td").eq(4).find("input").val(duty);
+            }
+        });
+    }
+
+
+    $("#tosave").on("click", function () {
+        var trList = $("#tb1 tbody").children("tr");
+        var cargoModels = [];
+        for (var i = 0; i < trList.length; i++) {
+            var id = trList.eq(i).attr("data-id");
+            var tdArr = trList.eq(i).find("td");
+            var clid = $("#hid").val();
+            var realdeclaredvalue = tdArr.eq(17).find('input').val();
+            if (realdeclaredvalue == "-") {
+                realdeclaredvalue = 0;
+            }
+            var cargoModel = {
+                id: id,
+                clid: clid,
+                realdeclaredvalue: realdeclaredvalue,
+                agreemessage: null,//1:提交  null 创建/保存
+            };
+            cargoModels.push(cargoModel);
+        }
+
+        console.log(JSON.stringify(cargoModels));
+        $.ajax({
+            url: "cargo/createcargocheckpricebyclid",
+            type: "post",
+            data: JSON.stringify(cargoModels),
+            contentType: "application/json",
+            success: function (data) {
+                swal({
+                    title: "提示！",
+                    text: "已保存任务！",
+                    type: "success"
+                }, function () {
+                    location.href = "toClaimList";
+                });
+            }
+        });
+
+    });
+
+    function findpic(i) {
+        $("#pic1").val("");
+        var val = $("#tb1 tbody tr").eq(i).find("td").eq(10).find("input").val();
+        val = val == "" ? 0 : val;
+        $("#showpic1").show();
+        $("#word1").hide();
+        if (val < 1 && isclick == 0) {
+            $("#showpic1").hide();
+            $("#word1").show();
+            $("#myModal1").modal();
+            $("#myModal1").attr("data-id", i);
+        } else if (val < 1 && isclick == 1) {
+            $("#showpic1").hide();
+            $("#word1").hide();
+            $("#myModal1").modal();
+            $("#myModal1").attr("data-id", i);
+        } else if (val >= 1 && isclick == 1) {
+            $("#myModal1").modal();
+            $("#myModal1").attr("data-id", i);
+            $("#showpic1").find("img").attr("src", "file/showimg/" + val);
+        } else if (val >= 1 && isclick == 0) {
+            $("#showpic1").show();
+            $("#word1").hide();
+            $("#myModal1").modal();
+            $("#myModal1").attr("data-id", i);
+            $("#showpic1").find("img").attr("src", "file/showimg/" + val);
+        }
+        var viewer = new Viewer(document.getElementById('myModal1'), {
+            //url: 'data-original'
+            show: function () {
+                viewer.update();
+            }
+        });
+    }
+
+    $("#math").on("click", function () {
+        var trList = $("#tb1 tbody").children("tr");
+        var boxcount = $("#boxcount").val();
+        for (var i = 0; i < trList.length; i++) {
+            var tdArr = trList.eq(i).find("td");
+            var val = tdArr.eq(7).find('input').val();
+            var val1 = tdArr.eq(17).find('input').val();
+            var ccvals = val * boxcount;
+            if (isNaN(ccvals)) {
+                tdArr.eq(17).find('input').val(0);
+            } else {
+                tdArr.eq(17).find('input').val(Math.floor(ccvals * 100) / 100);
+            }
+        }
+        number = boxcount;
+    });
+    //撤回任务
+    //    function toDelete(){
+    //        $.ajax({
+    //            type: "post",
+    //            url: "claim/deleteclaim",
+    //            data: {
+    //                "clid" : hid,
+    //                "cluid" : cluid,
+    //            },
+    //            dataType: "json",
+    //            success: function (data) {
+    //                if (data.statusCode ==1) {
+    //                    swal("提示!", "已撤回任务！", "success"), function () {
+    //                        location.href = "toClaimList";
+    //                    };
+    //                }
+    //            },
+    //            error: function (data) {
+    //                console.log
+    //                swal("跳转失败！", data.message, "error");
+    //            }
+    //        })
+    //    }
+
+    //撤回任
+    //    $("#toDelete").on("click",function(){
+    //        toDelete();
+    //    });
+
+    //驳回
+    function confirm() {
+        var num = 0;
+        $("#reject li").each(function () {
+            var clickType = $(this).attr("data-click");
+            if (clickType == 1) {
+                num = 1;
+                cltype = $(this).attr("data-no");
+                $(this).attr("data-click", "0");
+            }
+        })
+        if (num == 0) {
+            return;
+        }
+        var rejectremark = $("#rejectremark").val();
+        $.ajax({
+            type: "post",
+            url: "claim/rejectclamin",
+            data: {
+                "clid": hid,
+                "cluid": cluid,
+                "cltype": cltype,
+                "rejectremark": rejectremark,
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.statusCode == 0) {
+                    swal({
+                        title: "提示！",
+                        text: "已驳回任务！",
+                        type: "success"
+                    }, function () {
+                        location.href = "toClaimList";
+                    });
+                }
+            },
+            error: function (data) {
+                swal("跳转失败！", data.message, "error");
+            }
+        })
+    }
+
+    //提交任务
+    function toSubmit() {
+        var cargoModels = getCargoModels();
+        $.ajax({
+            url: "cargo/createcargocheckpricebyclid",
+            type: "post",
+            data: JSON.stringify(cargoModels),
+            contentType: "application/json",
+            success: function (data) {
+                swal({
+                    title: "提示！",
+                    text: "已提交任务！",
+                    type: "success"
+                }, function () {
+                    location.href = "toClaimList";
+                });
+            }
+        });
+    }
+
+    function getCargoModels() {
+        var trList = $("#tb1 tbody").children("tr");
+        var cargoModels = [];
+        for (var i = 0; i < trList.length; i++) {
+            var id = trList.eq(i).attr("data-id");
+            var tdArr = trList.eq(i).find("td");
+            var clid = $("#hid").val();
+            var realdeclaredvalue = tdArr.eq(17).find('input').val();
+            if (realdeclaredvalue == "-") {
+                realdeclaredvalue = 0;
+            }
+            var cargoModel = {
+                id: id,
+                clid: clid,
+                realdeclaredvalue: realdeclaredvalue,
+                agreemessage: 1,//1:提交  null 创建/保存
+            };
+            cargoModels.push(cargoModel);
+        }
+        return cargoModels;
+    }
+
+
+    $("#jisuan").on("click",function(){
+        var zongguanshui = $("#zongguanshui").val();
+        if(zongguanshui==null||zongguanshui==""||zongguanshui==0){
+            layer.msg("请先点击保存按钮");
+            return
+        }
+        var clid = $("#hid").val();
+        var huilv = $("#huilv").val();
+        if(huilv==null||huilv==""||huilv==0){
+            layer.msg("请填写汇率");
+            return
+        }
+        var kongyun = $("#kongyun").val();
+        var zhongliangh = $("#zhongliangh").val();
+        var jichang = $("#jichang").val();
+        var paisong = $("#paisong").val();
+        var baoshui = $("#baoshui").val();
+        var heding = $("#heding").val();
+        var shenhejieguo = $("#shenhejieguo").val();
+        var remark = $("#remark").val();
+        $.ajax({
+            url:"cargo/createtotalprice",
+            type:"post",
+            dataType:"json",
+            data:{
+                clid:clid,
+                huilv:huilv,
+                kongyun:kongyun,
+                weight:zhongliangh,
+                jichang:jichang,
+                paisong:paisong,
+                baoshui:baoshui,
+                heding:heding,
+                shenhe:shenhejieguo,
+                remark:remark
+            },
+            success:function(data){
+                //location.href="tophejiaupdate?id="+clid;
+                window.location.reload();
+            }
+        });
+    });
+
+
+
+    </script>
+</div>
+
+</body>
+
+</html>

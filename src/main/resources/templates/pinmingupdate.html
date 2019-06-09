@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            查看/编辑品名信息
+            <small></small>
+        </h1>
+        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;display: none;"
+                id="toupdate">编辑
+        </button>
+        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;display: none;"
+                id="tosave">保存
+        </button>
+    </section>
+    <section class="content">
+        <img class='img_close' src='resources/img/clone.png' style="display: none">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">品名信息</h3>
+                        <!--<ul class="nav navbar-right panel_toolbox">
+                            <li><a href="tocargolist" style="margin-right:10px;"><i class="fa fa-arrow-left"></i>返回</a>
+                            </li>
+                        </ul>-->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <input th:value="${hid}" id="hid" type="hidden">
+                        <input th:value="${pagemsg}" id="pagemsg" type="hidden">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">中文品名</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写中文品名"
+                                           id="chinesename">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">英文品名</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写英文品名"
+                                           id="englishname">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">中国HS</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写中国HS" id="chinseshs">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">荷兰HS</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写荷兰HS" id="hlhs">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon">关税</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写关税" id="duty">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script th:inline="javascript">//引用
+
+    $(function () {
+        $("#toupdate").show();
+        $(".disinp").attr("disabled", true);
+
+        var id = $("#hid").val();
+        $.ajax({
+            url: 'cargo/' + id + '/getcargoname',
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                console.log("---")
+                console.log(data)
+                var chinesename = data.data.chinesename;
+                $("#chinesename").val(chinesename);
+                var englishname = data.data.englishname;
+                $("#englishname").val(englishname);
+                var chinseshs = data.data.chinseshs;
+                $("#chinseshs").val(chinseshs);
+                var hlhs = data.data.hlhs;
+                $("#hlhs").val(hlhs);
+                var duty = data.data.duty;
+                $("#duty").val(duty);
+            }
+        });
+
+    });
+
+
+    $("#toupdate").on("click", function () {
+        $("#toupdate").hide();
+        $("#tosave").show();
+        $(".disinp").attr("disabled", false);
+        $("#setbox").show();
+    });
+
+    $("#tosave").on("click", function () {
+        var id = $("#hid").val();
+        var chinesename = $("#chinesename").val();
+        var englishname = $("#englishname").val();
+        var chinseshs = $("#chinseshs").val();
+        var hlhs = $("#hlhs").val();
+        var duty = $("#duty").val();
+        var cargoNameEntity = {
+            id: id,
+            chinesename: chinesename,
+            englishname: englishname,
+            chinseshs: chinseshs,
+            hlhs: hlhs,
+            duty: duty
+        };
+
+        $.ajax({
+            url: "warehouseclient/createupdatecargoname",
+            type: "post",
+            data: JSON.stringify(cargoNameEntity),
+            contentType: "application/json",
+            success: function (data) {
+                console.log("---------");
+                console.log(data);
+                location.href = "topinming";
+            }
+        });
+
+    })
+
+
+    </script>
+</div>
+
+</body>
+
+</html>

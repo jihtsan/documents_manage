@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+    <link rel="stylesheet" href="resources/plugins/dist/css/selectize.default.css">
+    <link rel="stylesheet"
+          href="resources/plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="resources/plugins/viewer/demo/css/viewer.min.css">
+    <link rel="stylesheet" href="resources/plugins/viewer/demo/css/viewer.min.css">
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            货物信息
+            <small></small>
+        </h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">入库信息</h3>
+                    </div>
+                    <div class="box-body">
+                        <input th:value="${hid}" id="hid" type="hidden">
+                        <input th:value="${pagemsg}" id="pagemsg" type="hidden">
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>入库时间</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请选择入库时间"
+                                           id="warehouseintime">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">仓库代码</span>
+                                    <div style="height: 34px;"><input id="warehouseid" placeholder="请填写仓库代码"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">客户</span>
+                                    <div style="height: 34px;"><input id="clientname" placeholder="请填写客户"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">国家</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写国家" id="country">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">追溯码</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写追溯码"
+                                           id="logisticsNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">运输方式</span>
+                                    <select id="gotype" class="form-control disinp">
+                                        <option value="1">空运</option>
+                                        <option value="2">海运</option>
+                                        <option value="3">铁运</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">地址</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写地址" id="address">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-header">
+                        <h3 class="box-title">箱子信息</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <table class="table" id="tb0">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;">序号</th>
+                                    <th style="text-align: center;">单箱重量（KG）</th>
+                                    <th style="text-align: center;">单箱尺寸（CM）</th>
+                                    <th style="text-align: center;">托盘号</th>
+                                    <th style="text-align: center;">FBA号码</th>
+                                    <th style="text-align: center;">地标</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box-header">
+                        <h3 class="box-title">货物信息</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group" style="overflow-x: scroll;">
+                            <table class="table" id="tb1" style="table-layout:fixed;">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;width: 80px;">复制</th>
+                                    <th style="text-align: center;width: 120px;">FBA号码</th>
+                                    <th style="text-align: center;width: 80px;">箱子序号</th>
+                                    <th style="text-align: center;width: 120px;">数量</th>
+                                    <th style="text-align: center;width: 150px;">中文品名</th>
+                                    <th style="text-align: center;width: 120px;">SKU号</th>
+                                    <th style="text-align: center;width: 120px;">材质</th>
+                                    <th style="text-align: center;width: 150px;">单个SKU重量（KG）</th>
+                                    <th style="text-align: center;width: 200px;">单个SKU尺寸（CM）</th>
+                                    <th style="text-align: center;width: 120px;">产品鉴定书</th>
+                                    <th style="text-align: center;width: 130px;">是否有产品鉴定书</th>
+                                    <th style="text-align: center;width: 120px;">照片</th>
+                                    <th style="text-align: center;width: 80px;">照片数量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--<div class="box-header">
+                        <h3 class="box-title">审价信息</h3>
+                    </div>
+                    &lt;!&ndash; /.box-header &ndash;&gt;
+                    <div class="box-body">
+                        <div class="form-group" style="overflow-x: scroll;">
+                            <table class="table" id="tb2" style="table-layout:fixed;">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;width: 150px;">SKU</th>
+                                    <th style="text-align: center;width: 100px;display:none;">照片</th>
+                                    <th style="text-align: center;width: 100px;">品牌授权书</th>
+                                    <th style="text-align: center;width: 150px;">中文品名</th>
+                                    <th style="text-align: center;width: 150px;">中国HS</th>
+                                    <th style="text-align: center;width: 150px;">英文品名</th>
+                                    <th style="text-align: center;width: 150px;">荷兰HS</th>
+                                    <th style="text-align: center;width: 100px;">关税税率</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">Air Freight</th>
+                                    <th style="text-align: center;width: 100px;">亚马逊卖价</th>
+                                    <th style="text-align: center;width: 150px;">ASIN码</th>
+                                    <th style="text-align: center;width: 100px;" class="bjhide">Delivery Freight</th>
+                                    <th style="text-align: center;width: 150px;">品牌名称</th>
+                                    <th style="text-align: center;width: 100px;">客户申报价格</th>
+                                    <th style="text-align: center;width: 100px;">货物评价</th>
+                                    <th style="text-align: center;width: 100px;">申报评估</th>
+                                    <th style="text-align: center;width: 150px;">链接</th>
+                                    <th style="text-align: center;width: 150px;">材质</th>
+                                    <th style="text-align: center;width: 150px;">是否强制认证</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>-->
+                    <div class="box-header">
+                        <h3 class="box-title">核价信息</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="form-group" style="overflow-x: scroll;">
+                            <table class="table" id="tb3" style="table-layout:fixed;">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;width: 150px;">中文品名</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">中国HS</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">英文品名</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">荷兰HS</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">关税税率</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">关税</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">Air Freight</th>
+                                    <th style="text-align: center;width: 150px;">亚马逊卖价</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">ASIN码</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">Delivery Freight</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">品牌名称</th>
+                                    <th style="text-align: center;width: 150px;display:none;" class="bjhide">品牌授权书</th>
+                                    <th style="text-align: center;width: 150px;">客户申报价格</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">货物评价</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">申报评估</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">链接</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">材质</th>
+                                    <th style="text-align: center;width: 150px;">实际申报价格</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">总申报价格</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">总税收</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">增税</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">增税率</th>
+                                    <th style="text-align: center;width: 150px;" class="bjhide">是否强制认证</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="box-header">
+                        <h3 class="box-title">配送信息</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>出库时间</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写出库时间"
+                                           id="outwarehouse">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">提单号</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写提单号" id="blno">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">运输方式</span>
+                                    <select class="form-control disinp" id="shiptype" onchange="chosefs();">
+                                        <option value="">请选择运输方式</option>
+                                        <option value="海运">海运</option>
+                                        <option value="空运">空运</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group" id="chuanming" style="display: none;">
+                                <div class="input-group">
+                                    <span class="input-group-addon">船名</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写船名" id="vesselname">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">起始地</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写起始地"
+                                           id="portloading">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>预计起运</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写预计起运"
+                                           id="shipetd">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>实际起运</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写实际起运"
+                                           id="shipatd">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">目的地</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写目的地"
+                                           id="shipportdischarge">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>预计到达</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写预计到达"
+                                           id="shipeta">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>实际到达</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写实际到达"
+                                           id="shipata">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">查验情况</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写查验情况"
+                                           id="inspectsituation">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">派送公司</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写派送公司"
+                                           id="distributecompany">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">跟踪号</span>
+                                    <input type="text" class="form-control disinp" placeholder="请填写跟踪号" id="trackingno">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>预计起运(配送)</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写预计起运"
+                                           id="distributeETD">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>实际起运(配送)</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写实际起运"
+                                           id="distributeATD">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>预计送达(配送)</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="请填写预计送达"
+                                           id="distributeETA">
+                                </div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <span>实际送达(配送)</span>
+                                    </div>
+                                    <input type="text" class="form-control pull-right disinp" placeholder="实际送达"
+                                           id="distributeATA">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true" data-id="">
+            <div class="modal-dialog" style="margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            图片
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal form-label-left" method="post"   enctype="multipart/form-data">
+                            <h4 id="word" align="center" style="display: none;">
+                                您尚未上传图片
+                            </h4>
+                            <div id="showpic" class="disinp1">
+                            </div>
+                            <div class="row" class="disinp1 form-control">
+                                <div class="col-md-8"><input type="file" id="pic" name="pic" multiple="multiple"
+                                                             accept="image/png,image/jpg,image/jpeg"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary disinp1" id="picup">
+                            上传
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true" data-id="">
+            <div class="modal-dialog" style="margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel1">
+                            产品鉴定书
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
+                            <h4 id="word1" align="center" style="display: none;">
+                                您尚未上传产品鉴定书
+                            </h4>
+                            <div id="showpic1" align="center" class="disinp1">
+                                <img src="" style="width: 350px;height: 300px;">
+                            </div>
+                            <div class="row" class="disinp1 form-control">
+                                <div class="col-md-8"><input type="file" id="pic1" name="pic1"
+                                                             accept="image/png,image/jpg,image/jpeg"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary disinp1" id="picup1">
+                            上传
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true" data-id="">
+            <div class="modal-dialog" style="margin-top:100px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel2">
+                            品牌授权书
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
+                            <h4 id="word2" align="center" style="display: none;">
+                                您尚未上传品牌授权书
+                            </h4>
+                            <div id="showpic2" align="center" class="disinp1">
+                                <img src="" style="width: 350px;height: 300px;">
+                            </div>
+                            <div class="row" class="disinp1 form-control">
+                                <div class="col-md-8"><input type="file" id="pic2" name="pic1"
+                                                             accept="image/png,image/jpg,image/jpeg"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary disinp1" id="picup2">
+                            上传
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+
+    </section>
+    <script src="resources/js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+    <script src="resources/plugins/dist/js/standalone/selectize.js"></script>
+    <script src="resources/plugins/moment/moment.min.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="resources/plugins/viewer/demo/js/viewer.min.js"></script>
+    <script src="resources/plugins/viewer/demo/js/viewer.min.js"></script>
+    <script th:inline="javascript">//引用
+    var boxlist = [];
+    var namelist = [];
+    $(function () {
+        /*$.ajaxSetup({
+            async: false
+        });*/
+
+        $(".disinp").attr("disabled", true);
+        $(".disinp1").hide();
+        var id = $("#hid").val();
+        $.ajax({
+            url: 'cargo/' + id + '/getcargologisticsbyid',
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                var warehouseaddress = data.data.cl.warehouseaddress == null ? "" : data.data.cl.warehouseaddress;
+                var country = data.data.cl.country == null ? "" : data.data.cl.country;
+                var warehouseintime = (data.data.cl.warehouseintime == null || data.data.cl.warehouseintime == "" || data.data.cl.warehouseintime == 'null') ? "" : moment(data.data.cl.warehouseintime).format('YYYY-MM-DD HH:mm:ss');
+                var logisticsNumber = data.data.cl.logisticsNumber == null ? "" : data.data.cl.logisticsNumber;
+                var gotype = data.data.cl.gotype == null ? "" : data.data.cl.gotype;
+                $("#address").val(warehouseaddress);
+                $("#country").val(country);
+                $("#warehouseintime").val(warehouseintime);
+                $("#logisticsNumber").val(logisticsNumber);
+                $("#boxcount").val(data.data.box.length);
+                $("#gotype").val(gotype);
+
+                var list1 = [data.data.cl.wid];
+                //setlist1(list1);
+                $.ajax({
+                    url: "warehouseclient/warehouse",
+                    type: "get",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.statusCode == 0) {
+                            var list = [];
+                            for (var i = 0; i < data.data.length; i++) {
+                                var demolist = {"id": data.data[i].id, "name": data.data[i].warehouseid};
+                                list.push(demolist);
+                            }
+                            var $select = $('#warehouseid').selectize({
+                                createOnBlur: true,
+                                maxItems: 1,
+                                valueField: 'id',
+                                labelField: 'name',
+                                searchField: 'name',
+                                options: list,
+                                create: true
+                            });
+                            var control = $select[0].selectize;
+                            control.setValue(list1);
+                            control.disable();
+                        }
+                    }
+                });
+                var list2 = [data.data.cl.cid];
+                list2.push(list2);
+                //setlist2(list2);
+                $.ajax({
+                    url: "warehouseclient/client",
+                    type: "get",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.statusCode == 0) {
+                            var list = [];
+                            for (var i = 0; i < data.data.length; i++) {
+                                var demolist = {"id": data.data[i].id, "name": data.data[i].clientname};
+                                list.push(demolist);
+                            }
+                            var $select = $('#clientname').selectize({
+                                createOnBlur: true,
+                                maxItems: 1,
+                                valueField: 'id',
+                                labelField: 'name',
+                                searchField: 'name',
+                                options: list,
+                                create: true
+                            });
+                            var control = $select[0].selectize;
+                            control.setValue(list2);
+                            control.disable();
+                        }
+                    }
+                });
+
+                $("#tb0 tbody").empty();
+                boxlist = data.data.box;
+                for (var i = 0; i < data.data.box.length; i++) {
+                    var sort = data.data.box[i].sort == null ? "" : data.data.box[i].sort;
+                    var weight = data.data.box[i].weight == null ? "" : data.data.box[i].weight;
+                    var size1 = data.data.box[i].boxlength == null ? "" : data.data.box[i].boxlength;
+                    var size2 = data.data.box[i].boxwidth == null ? "" : data.data.box[i].boxwidth;
+                    var size3 = data.data.box[i].boxhigh == null ? "" : data.data.box[i].boxhigh;
+                    var place = data.data.box[i].place == null ? "" : data.data.box[i].place;
+                    var fba = data.data.box[i].fba == null ? "" : data.data.box[i].fba;
+                    var addressmark = data.data.box[i].addressmark == null ? "" : data.data.box[i].addressmark;
+                    $("#tb0 tbody").append('<tr>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写序号" value="' + sort + '"></td>' +
+                            '<td style="padding-right: 20px;"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写单箱重量（KG）" value="' + weight + '"></td>' +
+                            '<td><div class="row">' +
+                            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size1 + '"></div>' +
+                            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size2 + '"></div>' +
+                            '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                            '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + size3 + '"></div></div></td>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写托盘号" value="' + place + '"></td>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写FBA号码" value="' + fba + '"></td>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写地标" value="' + addressmark + '"></td>' +
+                            '</tr>');
+                }
+                $("#tb0 tbody tr td").find("input").attr("disabled", true);
+            }
+        });
+
+        <!-- 获取所有的品名信息 -->
+        $.ajax({
+            url: "cargo/getcargoname",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                namelist = data.data;
+                showh();
+                /*showh1();*/
+                showh2();
+            }
+        });
+
+        $.ajax({
+            url: "cargo/" + id + "/getcargooverseasbyid",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                console.log(data)
+                if(data.data!=null){
+                    var outwarehouse = (data.data.outwarehouse == null || data.data.outwarehouse == "" || data.data.outwarehouse == 'null') ? "" : moment(data.data.outwarehouse).format('YYYY-MM-DD HH:mm:ss');
+                    var shipetd = (data.data.shipetd == null || data.data.shipetd == "" || data.data.shipetd == 'null') ? "" : moment(data.data.shipetd).format('YYYY-MM-DD HH:mm:ss');
+                    var shipatd = (data.data.shipatd == null || data.data.shipatd == "" || data.data.shipatd == 'null') ? "" : moment(data.data.shipatd).format('YYYY-MM-DD HH:mm:ss');
+                    var shipeta = (data.data.shipeta == null || data.data.shipeta == "" || data.data.shipeta == 'null') ? "" : moment(data.data.shipeta).format('YYYY-MM-DD HH:mm:ss');
+                    var shipata = (data.data.shipata == null || data.data.shipata == "" || data.data.shipata == 'null') ? "" : moment(data.data.shipata).format('YYYY-MM-DD HH:mm:ss');
+                    var distributeETD = (data.data.distributeETD == null || data.data.distributeETD == "" || data.data.distributeETD == 'null') ? "" : moment(data.data.distributeETD).format('YYYY-MM-DD HH:mm:ss');
+                    var distributeATD = (data.data.distributeATD == null || data.data.distributeATD == "" || data.data.distributeATD == 'null') ? "" : moment(data.data.distributeATD).format('YYYY-MM-DD HH:mm:ss');
+                    var distributeETA = (data.data.distributeETA == null || data.data.distributeETA == "" || data.data.distributeETA == 'null') ? "" : moment(data.data.distributeETA).format('YYYY-MM-DD HH:mm:ss');
+                    var distributeATA = (data.data.distributeATA == null || data.data.distributeATA == "" || data.data.distributeATA == 'null') ? "" : moment(data.data.distributeATA).format('YYYY-MM-DD HH:mm:ss');
+                    $("#hhid").val(data.data.id);
+                    $('#outwarehouse').datetimepicker('update', outwarehouse);
+                    $("#blno").val(data.data.blno);
+                    $("#shiptype").val(data.data.shiptype);
+                    if (data.data.shiptype == "海运") {
+                        $("#chuanming").show();
+                        $("#vesselname").val(data.data.vesselname);
+                    } else {
+                        $("#chuanming").hide();
+                    }
+                    $("#portloading").val(data.data.portloading);
+                    $('#shipetd').datetimepicker('update', shipetd);
+                    $('#shipatd').datetimepicker('update', shipatd);
+                    $("#shipportdischarge").val(data.data.shipportdischarge);
+                    $('#shipeta').datetimepicker('update', shipeta);
+                    $('#shipata').datetimepicker('update', shipata);
+                    $("#inspectsituation").val(data.data.inspectsituation);
+                    $("#distributecompany").val(data.data.distributecompany);
+                    $("#trackingno").val(data.data.trackingno);
+                    $('#distributeETD').datetimepicker('update', distributeETD);
+                    $('#distributeATD').datetimepicker('update', distributeATD);
+                    $('#distributeETA').datetimepicker('update', distributeETA);
+                    $('#distributeATA').datetimepicker('update', distributeATA);
+                }
+            }
+        });
+
+    });
+
+
+    <!-- 根据id获取获取信息 -->
+    function showh() {
+        var hid = $("#hid").val();
+        $.ajax({
+            url: "cargo/" + hid + "/getcargobyid",
+            type: "post",
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                console.log("---------------")
+                console.log(data)
+                var id = $("#hid").val();
+                $("#tb1 tbody").empty();
+                for (var i = 0; i < data.data.length; i++) {
+                    var id = data.data[i].id;
+                    var boxsort = data.data[i].boxsort ==null?"":data.data[i].boxsort;
+                    var count = data.data[i].count == null ? "" : data.data[i].count;
+                    var sku = data.data[i].sku == null ? "" : data.data[i].sku;
+                    var material = data.data[i].material == null ? "" : data.data[i].material;
+                    var weight = data.data[i].weight == null ? "" : data.data[i].weight;
+                    var fba = data.data[i].fba == null ? "" : data.data[i].fba;
+                    var needchemical = data.data[i].needchemical == null ? "" : data.data[i].needchemical;
+                    var val = "是";
+                    if (needchemical == "") {
+                        val = "否";
+                    }
+                    var cargolength = data.data[i].cargolength == null ? "" : data.data[i].cargolength;
+                    var cargowidth = data.data[i].cargowidth == null ? "" : data.data[i].cargowidth;
+                    var cargohigh = data.data[i].cargohigh == null ? "" : data.data[i].cargohigh;
+                    var piccount = data.data[i].cargohigh ==null?0:data.data[i].cargohigh;
+
+                    var chinesename = data.data[i].chinesename == null ? "" : data.data[i].chinesename;
+                    var chinseshs = data.data[i].chinseshs == null ? "" : data.data[i].chinseshs;
+                    var englishname = data.data[i].englishname == null ? "" : data.data[i].englishname;
+                    var hlhs = data.data[i].hlhs == null ? "" : data.data[i].hlhs;
+                    var duty = data.data[i].duty == null ? "" : data.data[i].duty;
+                    /*$.ajax({
+                        url: "cargo/" + id + "/getcargopicbycargoid",
+                        type: "post",
+                        async: false,
+                        dataType: "json",
+                        success: function (datas) {
+                            var listt = [];
+                            var val1 = 0;
+                            for (var j = 0; j < datas.data.length; j++) {
+                                listt[j] = datas.data[j].picid;
+                                val1 += 1;
+                            }*/
+                            $("#tb1 > tbody").append('<tr data-id="' + id + '">' +
+                                    '<td><button class="btn" onclick="fuzhi(' + i + ');">复制</button></td>' +
+                                    '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写FBA号码" value="' + fba + '" onkeypress="pentfba(' + i + ')"></td>' +
+                                    '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写箱子序号" value="' + boxsort + '"></td>' +
+                                    '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写数量" value="' + count + '"></td>' +
+                                    '<td><input class="form-control" placeholder="请选择中文品名" value="'+chinesename+'"></td>' +
+                                    '<td data-id><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写SKU号" value="' + sku + '" onkeypress="pentsku(' + i + ')"></td>' +
+                                    '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写材质" value="' + material + '"></td>' +
+                                    '<td style="padding-right: 20px;"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写重量" value="' + weight + '"></td>' +
+                                    '<td><div class="row">' +
+                                    '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + cargolength + '"></div>' +
+                                    '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                                    '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + cargowidth + '"></div>' +
+                                    '<div class="col-md-1" style="padding:0px;" align="center"><span style="line-height: 34px;">*</span></div>' +
+                                    '<div class="col-md-3" style="padding:0px;"><input type="text" class="form-control" style="padding:0px;text-align: center;" value="' + cargohigh + '"></div></div></td>' +
+                                    '<td align="center"><button onclick="findpic(' + i + ');" type="button" class="btn">查看</button><input type="hidden" value="' + needchemical + '"></td>' +
+                                    '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="" value="' + val + '"></td>' +
+                                    '<td align="center"><button onclick="aaa(' + i + ','+id+');"  type="button" class="btn">查看</button><input type="hidden"></td>' +// value="' + listt + '"
+                                    '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="" value="' + piccount + '"></td>' +
+                                    '</tr>');
+                           /* var $select = $('.pinming' + i).selectize({
+                                createOnBlur: true,
+                                maxItems: 1,
+                                valueField: 'id',
+                                labelField: 'chinesename',
+                                searchField: 'chinesename',
+                                options: namelist,
+                                create: false
+                            });
+                            var control = $select[0].selectize;
+                            control.setValue([data.data[i].cargonameid]);
+                            control.disable();*/
+                       /* }
+                    });*/
+                    $("#tb1 tbody tr").eq(i).find("td").eq(0).find("button").attr("disabled", true);
+                }
+                $("#boxcount1").val(data.data.length);
+                $("#tb1 tbody tr td").find("input").attr("disabled", true);
+                $("#tb1 tbody tr td").find("select").attr("disabled", true);
+            }
+        });
+    }
+
+    /*function showh1() {
+        var id = $("#hid").val();
+        $.ajax({
+            url: "cargo/" + id + "/getcargobyid",
+            type: "post",
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                var starlist = "<select disabled class='form-control'><option value=''>请选择星级</option>" +
+                        "<option value='1'>一星</option><option value='2'>二星</option><option value='3'>三星</option><option value='4'>四星</option><option value='5' selected>五星</option></selectdisabled>";
+                var pplist = "<select disabled class='form-control'><option value=''>请选择评级</option>" +
+                        "<option value='1'>偏高</option><option value='2'>偏低</option><option value='3' selected>合理</option></select>";
+                $("#tb2 > tbody").empty();
+                for (var k = 0; k < data.data.length; k++) {
+                    var id = data.data[k].id;
+                    var sku = data.data[k].sku == null ? "" : data.data[k].sku;
+                    var airfreight = data.data[k].airfreight == null ? "" : data.data[k].airfreight;
+                    var amzprice = data.data[k].amzprice == null ? "" : data.data[k].amzprice;
+                    var asin = data.data[k].asin == null ? "" : data.data[k].asin;
+                    var beliveryfreight = data.data[k].beliveryfreight == null ? "" : data.data[k].beliveryfreight;
+                    var brand = data.data[k].brand == null ? "" : data.data[k].brand;
+                    var brandc = data.data[k].brandc == null ? "" : data.data[k].brandc;
+                    var declaredvalue = data.data[k].declaredvalue == null ? "" : data.data[k].declaredvalue;
+                    var evaluation = data.data[k].evaluation == null ? "" : data.data[k].evaluation;
+                    var evaluationlevel = data.data[k].evaluationlevel == null ? "" : data.data[k].evaluationlevel;
+                    var link = data.data[k].link == null ? "" : data.data[k].link;
+                    var material = data.data[k].material == null ? "" : data.data[k].material;
+                    var qiangzhi = data.data[i].qiangzhi == null ? "" : data.data[i].qiangzhi;
+                    $.ajax({
+                        url: "cargo/" + id + "/getcargopicbycargoid",
+                        type: "post",
+                        async: false,
+                        dataType: "json",
+                        success: function (datas) {
+                            var listt = [];
+                            var val1 = 0;
+                            for (var j = 0; j < datas.data.length; j++) {
+                                listt[j] = datas.data[j].picid;
+                                val1 += 1;
+                            }
+                            $("#tb2 > tbody").append('<tr data-id="' + id + '">' +
+                                    '<td><input class="form-control ssku" disabled style="padding:0px;border: 0px;text-align: center;" placeholder="请填写SKU" value="' + sku + '"></td>' +
+                                    '<td align="center" style="display:none;"><button onclick="aaa('+k+');"  type="button" class="btn">查看</button><input type="hidden" value="'+listt+'"></td>'+
+                                    '<td align="center"><button onclick="findpic1(' + k + ');" type="button" class="btn">查看</button><input type="hidden" value="' + brandc + '"></td>' +
+                                    '<td><input class="pinmings' + k + '" placeholder="请选择中文品名" onchange="pingm(' + k + ');"></td>' +
+                                    '<td><input type="text" disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写中国HS"></td>' +
+                                    '<td><input type="text" disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写英文品名"></td>' +
+                                    '<td><input type="text" disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写荷兰HS"></td>' +
+                                    '<td><input type="text" disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写关税"></td>' +
+                                    '<td class="bjhide"><input disabled type="text" class="form-control " style="padding:0px;border: 0px;text-align: center;" placeholder="请填写Air Freight" value="' + airfreight + '"></td>' +
+                                    '<td><input type="text" disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写亚马逊卖价" value="' + amzprice + '"></td>' +
+                                    '<td><input type="text" disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写ASIN码" value="' + asin + '"></td>' +
+                                    '<td class="bjhide"><input disabled type="text" class="form-control " style="padding:0px;border: 0px;text-align: center;" placeholder="请填写Delivery Freight" value="' + beliveryfreight + '"></td>' +
+                                    '<td><input type="text"disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写品牌名称" value="' + brand + '"></td>' +
+                                    '<td><input type="text"disabled class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写客户申报价格" value="' + declaredvalue + '"></td>' +
+                                    '<td>' + starlist + '</td>' +
+                                    '<td>' + pplist + '</td>' +
+                                    '<td><input disabled type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写链接" value="' + link + '"></td>' +
+                                    '<td><input disabled type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写材质" value="' + material + '"></td>' +
+                                    '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="是否强制认证" value="'+qiangzhi+'"></td>' +
+                                    '</tr>');
+                            //alert("222:"+data.data[k].cargonameid)
+                            var $select = $('.pinmings' + k).selectize({
+                                createOnBlur: true,
+                                maxItems: 1,
+                                valueField: 'id',
+                                labelField: 'chinesename',
+                                searchField: 'chinesename',
+                                options: namelist,
+                                create: true
+                            });
+
+                            var control = $select[0].selectize;
+                            control.setValue([data.data[k].cargonameid]);
+                            control.disable();
+                            //controllist.push(control)
+                        }
+                    });
+                    $("#tb2 tbody").find("tr").eq(k).find("td").eq(13).find("select").find("option[value='" + evaluation + "']").attr("selected", true)
+                    $("#tb2 tbody").find("tr").eq(k).find("td").eq(14).find("select").find("option[value='" + evaluationlevel + "']").attr("selected", true)
+                }
+            }
+        });
+    }*/
+
+    /*function pingm(msg) {
+        var id = $(".pinmings" + msg).val();
+        $.ajax({
+            url: "cargo/" + id + "/getcargoname",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                console.log("返回品名信息");
+                console.log(data);
+                $("#tb2 tbody tr").eq(msg).find("td").eq(4).find("input").val(data.data.chinseshs)
+                $("#tb2 tbody tr").eq(msg).find("td").eq(5).find("input").val(data.data.englishname)
+                $("#tb2 tbody tr").eq(msg).find("td").eq(6).find("input").val(data.data.hlhs)
+                $("#tb2 tbody tr").eq(msg).find("td").eq(7).find("input").val(Math.floor(data.data.duty * 100) / 100)
+            }
+        });
+    }*/
+
+    <!-- 根据id获取获取信息 -->
+    function showh2() {
+        var id = $("#hid").val();
+        $.ajax({
+            url: "cargo/" + id + "/getcargobyid",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                console.log("核价信息")
+                console.log(data)
+                $("#tb3 > tbody").empty();
+                for (var i = 0; i < data.data.length; i++) {
+                    var id = data.data[i].id;
+                    var airfreight = (data.data[i].airfreight == null||data.data[i].airfreight==""||data.data[i].airfreight==0) ? "-" : data.data[i].airfreight;
+                    var amzprice = (data.data[i].amzprice == null||data.data[i].amzprice==""||data.data[i].amzprice==0) ? "-" : data.data[i].amzprice;
+                    var asin = data.data[i].asin == null ? "" : data.data[i].asin;
+                    var beliveryfreight = (data.data[i].beliveryfreight == null||data.data[i].beliveryfreight==0||data.data[i].beliveryfreight=="") ? "-" : data.data[i].beliveryfreight;
+                    var brand = data.data[i].brand == null ? "" : data.data[i].brand;
+                    var brandc = data.data[i].brandc == null ? "" : data.data[i].brandc;
+                    var declaredvalue = (data.data[i].declaredvalue == null||data.data[i].declaredvalue==0||data.data[i].declaredvalue=="") ? "-" : data.data[i].declaredvalue;
+                    var evaluation = (data.data[i].evaluation == null||data.data[i].evaluation==""||data.data[i].evaluation==0) ? "-" : data.data[i].evaluation;
+                    var evaluationlevel = (data.data[i].evaluationlevel == null||data.data[i].evaluationlevel==0||data.data[i].evaluationlevel=="") ? "-" : data.data[i].evaluationlevel;
+                    var link = data.data[i].link == null ? "" : data.data[i].link;
+                    var material = data.data[i].material == null ? "" : data.data[i].material;
+                    var realdeclaredvalue = (data.data[i].realdeclaredvalue == null||data.data[i].realdeclaredvalue==0||data.data[i].realdeclaredvalue=="") ? "-" : data.data[i].realdeclaredvalue;
+                    var totaldeclaredvalue = (data.data[i].totaldeclaredvalue == null||data.data[i].totaldeclaredvalue==0||data.data[i].totaldeclaredvalue=="") ? "-" : data.data[i].totaldeclaredvalue;
+                    var totaltex = (data.data[i].totaltex == null||data.data[i].totaltex==0||data.data[i].totaltex=="") ? "-" : data.data[i].totaltex;
+                    var vat = (data.data[i].vat == null||data.data[i].vat==0||data.data[i].vat=="" )? "-" : data.data[i].vat;
+                    var vatrate = (data.data[i].vatrate == null||data.data[i].vatrate==""||data.data[i].vatrate==0) ? "-" : data.data[i].vatrate;
+                    var duty = data.data[i].duty == null ? "" : data.data[i].duty;
+                    var dutycount = duty*100;
+                    var qiangzhi = data.data[i].qiangzhi == null ? "" : data.data[i].qiangzhi;
+                    var totalduty = (data.data[i].totalduty == null||data.data[i].totalduty == ""||data.data[i].totalduty == null==0) ? "-" : data.data[i].totalduty;
+                    var boxcount = $("#boxcount").val();
+                    number = boxcount;
+                    if (realdeclaredvalue == "-") {
+                        realdeclaredvalue = "-";
+                    }
+                    var starlist = "<select class='form-control'><option value=''>请选择星级</option>" +
+                            "<option value='1'>一星</option><option value='2'>二星</option><option value='3'>三星</option><option value='4'>四星</option><option value='5' selected>五星</option></select>";
+                    var pplist = "<select class='form-control'><option value='' selected >无</option>" +
+                            "<option value='1'>偏高</option><option value='2'>偏低</option><option value='3'>合理</option></select>";
+
+                    var chinesename = data.data[i].chinesename == null ? "" : data.data[i].chinesename;
+                    var chinseshs = data.data[i].chinseshs == null ? "" : data.data[i].chinseshs;
+                    var englishname = data.data[i].englishname == null ? "" : data.data[i].englishname;
+                    var hlhs = data.data[i].hlhs == null ? "" : data.data[i].hlhs;
+                    var duty = (data.data[i].duty == null || data.data[i].duty == "" || data.data[i].duty == 0) ? "-" : data.data[i].duty;
+                    duty=Math.floor(duty * 100) / 100
+                    //var duty = data.data[i].duty == null ? "" : data.data[i].duty;
+                    $("#tb3 > tbody").append('<tr data-id="' + id + '">' +
+                            '<td><input type="text" class="form-control pinmingt' + i + '" placeholder="请选择中文品名" value="'+chinesename+'"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写中国HS" value="'+chinseshs+'"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写英文品名" value="'+englishname+'"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写荷兰HS" value="'+hlhs+'"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写关税税率" value="'+duty+'"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写关税" value="'+totalduty+'"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control " style="padding:0px;border: 0px;text-align: center;" placeholder="请填写Air Freight" value="' + airfreight + '"></td>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写亚马逊卖价" value="' + amzprice + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写ASIN码" value="' + asin + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control " style="padding:0px;border: 0px;text-align: center;" placeholder="请填写Delivery Freight" value="' + beliveryfreight + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写品牌名称" value="' + brand + '"></td>' +
+                            '<td align="center" style="display:none;" class="bjhide"><button onclick="findpic(' + i + ');" type="button" class="btn">查看</button><input type="hidden" value="' + brandc + '"></td>' +
+                            '<td><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写客户申报价格" value="' + declaredvalue + '"></td>' +
+                            /*'<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写货物评价" value="' + evaluation + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写申报评估" value="' + evaluationlevel + '"></td>' +*/
+                            '<td class="bjhide">'+starlist+'</td>' +
+                            '<td class="bjhide">'+pplist+'</td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写链接" value="' + link + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写材质" value="' + material + '"></td>' +
+                            '<td><input type="text" class="form-control show1" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写实际申报价格" value="' + realdeclaredvalue + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写总申报价格" value="' + totaldeclaredvalue + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写总税收" value="' + totaltex + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写增税" value="' + vat + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="请填写增税率" value="' + vatrate + '"></td>' +
+                            '<td class="bjhide"><input type="text" class="form-control" style="padding:0px;border: 0px;text-align: center;" placeholder="" value="' + qiangzhi + '"></td>' +
+                            '</tr>');
+                    /*var $select = $('.pinmingt' + i).selectize({
+                        createOnBlur: true,
+                        maxItems: 1,
+                        valueField: 'id',
+                        labelField: 'chinesename',
+                        searchField: 'chinesename',
+                        options: namelist,
+                        create: true
+                    });
+                    var control = $select[0].selectize;
+                    control.setValue([data.data[i].cargonameid]);
+                    control.disable();*/
+
+                    $("#tb3 tbody").find("tr").eq(i).find("td").eq(0).find("select").find("option[data-id='" + 1 + "']").attr("selected", true)
+                    $("#tb3 tbody").find("tr").eq(i).find("td").eq(12).find("select").find("option[value='" + evaluation + "']").attr("selected", true)
+                    $("#tb3 tbody").find("tr").eq(i).find("td").eq(13).find("select").find("option[value='" + evaluationlevel + "']").attr("selected", true)
+                }
+                $("#tb3 tbody tr td").find("input").attr("disabled", true);
+                $("#tb3 tbody tr td").find("select").attr("disabled", true);
+
+            }
+        });
+    }
+
+    /*function pingms(msg) {
+        var id = $(".pinmingt" + msg).val();
+        $.ajax({
+            url: "cargo/" + id + "/getcargoname",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                $("#tb3 tbody tr").eq(msg).find("td").eq(1).find("input").val(data.data.chinseshs);
+                $("#tb3 tbody tr").eq(msg).find("td").eq(2).find("input").val(data.data.englishname);
+                $("#tb3 tbody tr").eq(msg).find("td").eq(3).find("input").val(data.data.hlhs);
+                var duty = (data.data.duty == null || data.data.duty == "" || data.data.duty == 0) ? "-" : data.data.duty;
+                duty=Math.floor(duty * 100) / 100
+                $("#tb3 tbody tr").eq(msg).find("td").eq(4).find("input").val(duty);
+            }
+        });
+    }*/
+
+    $('#warehouseintime').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#outwarehouse').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#shipetd').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#shipatd').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#shipeta').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#shipata').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#distributeETD').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#distributeATD').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#distributeETA').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+    $('#distributeATA').datetimepicker({
+        minuteStep: 1,
+        todayBtn: true,
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true
+    });
+
+
+    function aaa(i,id) {
+        $("#pic").val("");
+        $("#myModal").modal();
+        $("#myModal").attr("data-id", i);
+        //$("#aa1").attr("src","file/aaa");
+        $("#showpic").empty();
+        $.ajax({
+            url: "cargo/" + id + "/getcargopicbycargoid",
+            type: "post",
+            dataType: "json",
+            success: function (datas) {
+                var listt = [];
+                for (var j = 0; j < datas.data.length; j++) {
+                    listt[j] = datas.data[j].picid;
+                }
+
+                $("#tb1 tbody tr").eq(i).find("td").eq(11).find("input").val(listt)
+
+                var val = $("#tb1 tbody tr").eq(i).find("td").eq(11).find("input").val();
+                if (val.length < 1) {
+                    $("#showpic").hide();
+                    $("#word").show();
+                    $("#myModal").modal();
+                    $("#myModal").attr("data-id", i);
+                    return;
+                } else if (val.length >= 1) {
+                    $("#showpic").show();
+                    $("#word").hide();
+                    $("#myModal").modal();
+                    $("#myModal").attr("data-id", i);
+                    $("#showpic").find("img").attr("src", "file/showimg/" + val);
+                }
+                var a = val.split(",");
+                var v = 1;
+                for (var k = 0; k < a.length; k++) {
+                    v += 1;
+                    $("#showpic").append("<div class='img_div' style='position:relative;width:150px;height:150px;display:inline-block;'>\n" +
+                            "<img class='img_close' src='resources/img/clone.png' style='position:absolute;right:0;top:0;' width='15'  onclick='deleteimg(" + a[k] + ",this)'>\n" +
+                            "<img src='file/showimg/" + a[k] + "' class='img-thumbnail' width='140' height='140' >" +
+                            "</div>"
+                    );
+                }
+                var viewer = new Viewer(document.getElementById('myModal'), {
+                    //url: 'data-original'
+                    show: function (){
+                        viewer.update();
+                    }
+                });
+                $("#tb1 tbody tr").eq(i).find("td").eq(11).find("input").val(v);
+
+
+            }
+        })
+
+
+    }
+
+    function findpic(i) {
+        $("#pic1").val("");
+        var val = $("#tb1 tbody tr").eq(i).find("td").eq(9).find("input").val();
+        val = val == "" ? 0 : val;
+        $("#showpic1").show();
+        $("#word1").hide();
+        if (val < 1) {
+            $("#showpic1").hide();
+            $("#word1").show();
+            $("#myModal1").modal();
+            $("#myModal1").attr("data-id", i);
+        } else if (val >= 1) {
+            $("#showpic1").show();
+            $("#word1").hide();
+            $("#myModal1").modal();
+            $("#myModal1").attr("data-id", i);
+            $("#showpic1").find("img").attr("src", "file/showimg/" + val);
+        }
+        var viewer = new Viewer(document.getElementById('myModal1'), {
+            //url: 'data-original'
+            show: function (){
+                viewer.update();
+            }
+        });
+    }
+
+    /*function findpic1(i) {
+        $("#pic2").val("");
+        var val = $("#tb2 tbody tr").eq(i).find("td").eq(2).find("input").val();
+        val = val == "" ? 0 : val;
+        $("#showpic2").show();
+        $("#word2").hide();
+        if (val < 1) {
+            $("#showpic2").hide();
+            $("#word2").show();
+            $("#myModal2").modal();
+            $("#myModal2").attr("data-id", i);
+        } else if (val >= 1) {
+            $("#showpic2").show();
+            $("#word2").hide();
+            $("#myModal2").modal();
+            $("#myModal2").attr("data-id", i);
+            $("#showpic2").find("img").attr("src", "file/showimg/" + val);
+        }
+        var viewer = new Viewer(document.getElementById('myModal2'), {
+            //url: 'data-original'
+            show: function (){
+                viewer.update();
+            }
+        });
+    }*/
+    </script>
+</div>
+</body>
+</html>

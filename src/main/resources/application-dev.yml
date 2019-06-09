@@ -57,3 +57,5 @@ spring:
 rhino:
   admin:
     userid: 1
+page:
+  pagesize: 10

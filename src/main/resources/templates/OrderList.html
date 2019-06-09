@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+    <link rel="stylesheet" href="resources/plugins/datatables/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="resources/plugins/sweetalert/sweetalert.css">
+
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            订单管理
+            <small></small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>订单管理</a></li>
+            <li class="active">订单列表</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">订单列表</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row col-md-12">
+                            <label class="" style="line-height: 35px; float: left;">商品名称：</label>
+                            <div class="col-md-2">
+                                <input type="text" placeholder="请输入产品名称" class="form-control"
+                                       id="productname" name="productname">
+                            </div>
+                            <div class="col-md-1"></div>
+                            <label class="" style="line-height: 35px; float: left;">订单状态：</label>
+                            <div class="col-md-2">
+                                <select class="form-control" id="status">
+                                    <option value="">全部</option>
+                                    <option value="0">已结清</option>
+                                    <option value="1">未结清</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-2">
+                                <button class="btn btn-primary" type="button"
+                                        onClick="search()">搜索
+                                </button>
+                            </div>
+                            <div class="col-md-2" style="float: right">
+                                <a class="btn btn-primary" id="btn5">结款
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="table" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>订单号</th>
+                                        <th>购买数量</th>
+                                        <th>购买客户</th>
+                                        <th>出售时间</th>
+                                        <th>出售的总价</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"></div>
+                            <div class="col-md-7">
+                                <div class="fenye" id="page" style="float: right;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+    <script src="resources/plugins/page/page.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
+
+
+    <script>
+        var no;
+        var url;
+        var pageNum = 1;
+        var changeid = new Array();
+        var changecost = new Array();
+        var changesupply = new Array();
+
+        function GetRequest() {
+            url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                str = url.substr(1);
+                if (str.indexOf("&") != -1) {
+                    strs = str.split("&");
+                    for (var i = 0; i < strs.length; i++) {
+                        no = theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                        pageNum = no;
+                    }
+                } else {
+                    no = theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+                    pageNum = no;
+                }
+            }
+
+        }
+
+        $(function () {
+            GetRequest();
+            if (url != "") {
+                pageNo(no);
+            }
+            if (url == "") {
+                no = 1;
+                pageNo(no);
+            }
+        });
+
+        function template(data) {
+            var id;
+            //渲染列表
+            $("table tbody").empty();
+            for (var i = 0; i < data.length; i++) {
+                id = data[i].id;
+                var ordername = data[i].ordername == null ? "-" : data[i].ordername;
+                ordername = "<a href='toordercargo?ordernumber=" + ordername + "'>" + ordername + "</a>";
+                var createtime = data[i].createtime == null ? "-" : data[i].createtime;
+                var sellname = data[i].sellname == null ? "-" : data[i].sellname;
+                var sellprice = data[i].sellprice == null ? "-" : data[i].sellprice;
+                var count = data[i].cost == null ? "-" : data[i].cost;
+                var fun = {};
+                fun.SELECT = "doSearch(" + id + ")";
+                fun.UPDATE = "toupdate(" + id + ")";
+                //if (status == 0) {
+                //    fun.DOWN = "todown(" + id + ")";
+                $("table tbody").append("<tr class='poin ter'>"
+                    + "   <td>" + ordername + "</td>"
+                    + "   <td>" + count + "</td>"
+                    + "   <td>" + sellname + "</td>"
+                    + "   <td>" + createtime + "</td>"
+                    + "   <td>" + sellprice + "</td>"
+                    + "   </tr>");
+
+                $("input[name='orderid']").on('click', function () {
+                    var checkboxcount = $("input[name='orderid']").length;
+                    var checkedboxcount = $("input[name='orderid']:checked").length;
+                    if (checkedboxcount < checkboxcount) {
+//                $("[name=orderid]:checkbox").attr("checked",this.checked?"true":"");
+                        $("#allchecked").prop("checked", false);
+
+                    } else {
+                        $("#allchecked").prop("checked", true);
+
+                    }
+                })
+            }
+        }
+
+        function pageNo(no) {
+            $.ajax({
+                type: "get",
+                url: "cargoorder/getorderlist",
+                data: {
+                    pagesize: 10,
+                    pageno: no
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "post",
+                                url: "cargoorder/getcargoorder",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    template(data.data.resultList);
+                                    pageNum = pageIndex;
+                                },
+                                error: function () {
+                                    swal("跳转失败！", "跳转失败。", "error");
+                                }
+                            })
+                        }
+                    })
+                    template(data.data.resultList);
+                }
+            });
+        }
+
+
+        $("#allchecked").click(function () {
+            var checkboxcount = $("input[name='orderid']").length;
+            var checkedboxcount = $("input[name='orderid']:checked").length;
+            if (checkedboxcount < checkboxcount) {
+//                $("[name=orderid]:checkbox").attr("checked",this.checked?"true":"");
+                $("[name='orderid']").prop("checked", true);
+
+            } else {
+                $("[name='orderid']").prop("checked", false);
+            }
+        })
+
+        function search() {
+            var productname = $("#productname").val();
+            var status = $("#status option:selected").val();
+            var openform = $("#openform option:selected").val();
+            var orgname = $("#orgname").val();
+            $.ajax({
+                type: "post",
+                url: "bankfundfinacial/getfundlistbyparams.htm",
+                data: {
+                    pagesize: 10,
+                    pageno: 1,
+                    status: status,
+                    productname: productname,
+                    openform: openform,
+                    orgname: orgname
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "post",
+                                url: "bankfundfinacial/getfundlistbyparams.htm",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex,
+                                    status: status,
+                                    productname: productname,
+                                    openform: openform
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    //if(data.statusCode == 200){
+                                    template(data.data.resultList);
+                                    // }
+                                }
+                            })
+                        }
+                    })
+                    template(data.data.resultList);
+                }
+            })
+        }
+
+
+    </script>
+</div>
+
+</body>
+
+</html>
+
+

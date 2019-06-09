@@ -1,6 +1,7 @@
 package com.jsan.github.doc_manager.controller;
 
 import com.jsan.github.doc_manager.common.BaseController;
+import com.jsan.github.doc_manager.entity.RhiUser;
 import com.jsan.github.doc_manager.entity.VO.ResponseModel;
 import com.jsan.github.doc_manager.service.IRhiUserService;
 import io.swagger.annotations.Api;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Api(tags = "犀牛-登录")
 @Controller
 @Slf4j
-@RequestMapping("/index")
+@RequestMapping("/user")
 public class LoginController extends BaseController {
     private final IRhiUserService userService;
 
@@ -33,7 +35,16 @@ public class LoginController extends BaseController {
     public ResponseModel login(
             @RequestParam("account") String account,
             @RequestParam("password") String password) {
-        userService.login(account, password);
+        return response(userService.login(account, password));
+    }
+
+
+
+    @ApiOperation(value = "获取用户信息", httpMethod = "POST", response = String.class)
+    @RequestMapping(value = "getUserInfo", method = RequestMethod.POST, produces = "application/json")
+    public ResponseModel getUserInfo() {
+        Subject currentUser = SecurityUtils.getSubject();
+        Object principal = currentUser.getPrincipal();
         return response("登陆成功");
     }
 

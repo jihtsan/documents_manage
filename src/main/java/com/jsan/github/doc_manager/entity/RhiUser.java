@@ -3,6 +3,8 @@ package com.jsan.github.doc_manager.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsan.github.doc_manager.common.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +27,7 @@ public class RhiUser extends BaseEntity {
 
     private String userName;
 
+    @JsonIgnore
     private String password;
 
     private String nickName;

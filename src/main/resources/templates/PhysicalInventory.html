@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+    <link rel="stylesheet" href="resources/plugins/datatables/dataTables.bootstrap.css"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            盘库管理
+            <small></small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i>盘库管理</a></li>
+            <li class="active">盘库记录</li>
+        </ol>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">盘库记录</h3>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="box-body">
+                        <div class="row col-md-12">
+                            <label class="" style="line-height: 35px; float: left;">商品名称：</label>
+                            <div class="col-md-2">
+                                <input type="text" placeholder="请输入产品名称" class="form-control"
+                                       id="productname" name="productname">
+                            </div>
+                            <div class="col-md-1"></div>
+                            <label class="" style="line-height: 35px; float: left;">商品状态：</label>
+                            <div class="col-md-2">
+                                <select class="form-control" id="status">
+                                    <option value="">全部</option>
+                                    <option value="0">在库</option>
+                                    <option value="2">租借</option>
+                                    <option value="3">售出</option>
+                                    <option value="4">预约</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-2">
+                                <button class="btn btn-primary" type="button"
+                                        onClick="search()">搜索
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="table" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>盘库时间</th>
+                                        <th>盘库仓库</th>
+                                        <th>盘库状态</th>
+                                        <th>盘库人</th>
+                                        <th>查看详情</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"></div>
+                            <div class="col-md-7">
+                                <div class="fenye" id="page" style="float: right;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+    <script src="resources/plugins/page/page.js"></script>
+
+    <script>
+        var no;
+        var url;
+        var pageNum = 1;
+
+        function GetRequest() {
+            url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                str = url.substr(1);
+                if (str.indexOf("&") != -1) {
+                    strs = str.split("&");
+                    for (var i = 0; i < strs.length; i++) {
+                        no = theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                        pageNum = no;
+                    }
+                } else {
+                    no = theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+                    pageNum = no;
+                }
+            }
+
+        }
+
+        $(function () {
+            GetRequest();
+            if (url != "") {
+                pageNo(no);
+            }
+            if (url == "") {
+                no = 1;
+                pageNo(no);
+            }
+        });
+
+        function template(data) {
+            var id;
+            //渲染列表
+            $("table tbody").empty();
+            for (var i = 0; i < data.length; i++) {
+                id = data[i].id;
+                var username = data[i].username == null ? "-" : data[i].username;
+                var warehousename = data[i].warehousename == null ? "-" : data[i].warehousename;
+                var inf = "<a class=\"btn btn-default\" href='/toorderinf?orderid="+id+"' role=\"button\">查看详情</a>";
+                var createtime = data[i].createtime == null ? "-" : data[i].createtime;
+                var status = data[i].status;
+                switch (status) {
+                    case 0:
+                        status = '盘库无异常';
+                        break;
+                    case 1:
+                        status = '盘库缺失';
+                        break;
+                    case 2:
+                        status = '盘库多出';
+                        break;
+                    case 3:
+                        status = '又多又少';
+                        break;
+                    default:
+                        status = '未知状态';
+                }
+                var fun = {};
+                fun.SELECT = "doSearch(" + id + ")";
+                fun.UPDATE = "toupdate(" + id + ")";
+                //if (status == 0) {
+                //    fun.DOWN = "todown(" + id + ")";
+                $("table tbody").append("<tr class='pointer'>"
+                    + "   <td>" + id + "</td>"
+                    + "   <td>" + createtime + "</td>"
+                    + "   <td>" + warehousename + "</td>"
+                    + "   <td>" + status + "</td>"
+                    + "   <td>" + username + "</td>"
+                    + "   <td>" + inf + "</td>"
+                    + "   </tr>");
+            }
+        }
+
+        function pageNo(no) {
+            $.ajax({
+                type: "get",
+                url: "cargo/physicalinventorylist",
+                data: {
+                    pagesize: 10,
+                    pageno: no
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "post",
+                                url: "cargo/getcargo",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    template(data.data.resultList);
+                                    pageNum = pageIndex;
+                                },
+                                error: function () {
+                                    swal("跳转失败！", "跳转失败。", "error");
+                                }
+                            })
+                        }
+                    })
+                    template(data.data.resultList);
+                }
+            });
+        }
+
+        function search() {
+            var productname = $("#productname").val();
+            var status = $("#status option:selected").val();
+            var openform = $("#openform option:selected").val();
+            var orgname = $("#orgname").val();
+            $.ajax({
+                type: "post",
+                url: "bankfundfinacial/getfundlistbyparams.htm",
+                data: {
+                    pagesize: 10,
+                    pageno: 1,
+                    status: status,
+                    productname: productname,
+                    openform: openform,
+                    orgname: orgname
+                },
+                dataType: "json",
+                success: function (data) {
+                    $("#page").pagination({
+                        pageIndex: no, // 默认页
+                        pageSize: data.data.pageSize, // 默认分页大小
+                        totalCount: data.data.rowCount,
+                        onChange: function (pageIndex, pageSize) {
+                            $.ajax({
+                                type: "post",
+                                url: "bankfundfinacial/getfundlistbyparams.htm",
+                                data: {
+                                    pagesize: pageSize,
+                                    pageno: pageIndex,
+                                    status: status,
+                                    productname: productname,
+                                    openform: openform
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    //if(data.statusCode == 200){
+                                    template(data.data.resultList);
+                                    // }
+                                }
+                            })
+                        }
+                    })
+                    template(data.data.resultList);
+                }
+            })
+        }
+
+    </script>
+</div>
+
+</body>
+
+</html>
+
+

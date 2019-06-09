@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AlphaZ</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="content-header">
+        <h1>
+            页面未找到
+        </h1>
+
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="error-page">
+            <h2 class="headline text-yellow">404</h2>
+
+            <div class="error-content">
+                <h3><i class="fa fa-warning text-yellow"></i> 糟糕! 您访问的页面未找到。</h3>
+
+                <p>
+                    您可以尝试重新操作，或者返回首页继续操作<a href="/">返回首页</a>。
+                </p>
+                <p th:text="${message!=null?('错误信息：'+message):''}"></p>
+            </div>
+        </div>
+        <!-- /.error-page -->
+
+    </section>
+</div>
+</body>
+
+</html>

@@ -51,8 +51,7 @@ public class CustomerRealm extends AuthorizingRealm {
             throw new UnknownAccountException();
         } else {
             if (password.equals(user.getPassword())) {
-                SimpleAuthenticationInfo authorizationInfo = new SimpleAuthenticationInfo(user, user.getPassword().toCharArray(), getName());
-                return authorizationInfo;
+                return new SimpleAuthenticationInfo(user, user.getPassword().toCharArray(), getName());
             } else {
                 throw new IncorrectCredentialsException();
             }
