@@ -1,5 +1,7 @@
 package com.jsan.github.doc_manager.entity;
 
+import cn.hutool.core.lang.Console;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -8,6 +10,7 @@ import com.jsan.github.doc_manager.enums.ActicleEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.aspectj.bridge.MessageWriter;
 
 import java.sql.Blob;
 import java.time.LocalDateTime;
@@ -32,7 +35,7 @@ public class RhiActicle extends BaseEntity {
 
     private String title;
 
-    private Blob htmlContent;
+    private String htmlContent;
 
     private ActicleEnum classify;
 
@@ -46,5 +49,8 @@ public class RhiActicle extends BaseEntity {
 
     private Boolean sortTop;
 
-
+    public static void main(String[] args) {
+        RhiActicle a =new RhiActicle().setClassify(ActicleEnum.COMPANY).setContentState(true).setHtmlContent("aaaaaaaaaaaaaaaaaaaa").setSortTop(true).setTitle("abc");
+        Console.log(JSON.toJSONString(a));
+    }
 }

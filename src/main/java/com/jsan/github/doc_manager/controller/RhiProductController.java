@@ -3,6 +3,7 @@ package com.jsan.github.doc_manager.controller;
 
 import com.jsan.github.doc_manager.common.BaseController;
 import com.jsan.github.doc_manager.entity.RhiProduct;
+import com.jsan.github.doc_manager.entity.RhiProductDimension;
 import com.jsan.github.doc_manager.entity.VO.ResponseModel;
 import com.jsan.github.doc_manager.service.IRhiProductDimensionService;
 import com.jsan.github.doc_manager.service.IRhiProductService;
@@ -63,6 +64,13 @@ public class RhiProductController extends BaseController {
     @RequestMapping(value = "r_product_dimension", method = RequestMethod.GET, produces = "application/json")
     public ResponseModel retrieveProductDimensionList() {
         return response(productDimensionService.list());
+    }
+
+
+    @ApiOperation(value = "产品维度增加", httpMethod = "POST", response = String.class)
+    @RequestMapping(value = "c_product_dimension", method = RequestMethod.POST, produces = "application/json")
+    public ResponseModel retrieveProductDimensionList(@RequestBody RhiProductDimension productDimension) {
+        return response(productDimensionService.save(productDimension));
     }
 
 

@@ -1,6 +1,8 @@
 package com.jsan.github.doc_manager.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.jsan.github.doc_manager.entity.RhiActicle;
 
 /**
@@ -14,4 +16,8 @@ import com.jsan.github.doc_manager.entity.RhiActicle;
  */
 public interface IRhiActicleService extends IService<RhiActicle> {
 
+
+    PageInfo<RhiActicle> retrieveActicleList(String acticle, Integer classify, int pageno);
+
+    void acticle2Top(Long acticleId,boolean toptype);
 }

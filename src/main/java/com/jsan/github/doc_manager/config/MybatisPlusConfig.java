@@ -41,16 +41,14 @@ public class MybatisPlusConfig {
         return sqlExplainInterceptor;
     }
 
-    @Bean
-    public PerformanceInterceptor performanceInterceptor() {
-        //启用性能分析插件
-        return new PerformanceInterceptor();
-    }
 
     @Bean
     public PaginationInterceptor paginationInterceptor() {
-        //paginationInterceptor.setLocalPage(true);// 开启 PageHelper 的支持
-        return new PaginationInterceptor();
+        PaginationInterceptor page = new PaginationInterceptor();
+        page.setDialectType("mysql");
+
+
+      return page;
     }
 
     @Bean

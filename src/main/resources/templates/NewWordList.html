@@ -20,26 +20,31 @@
                     <div class="box-header">
                         <div class="row col-md-12">
                             <label class="col-md-2" style="line-height: 35px; float: left;">新闻种类</label>
-                            <div class="col-md-2"><input class="form-control" placeholder="请填写用户名" id="username"></div>
-                            <div class="row col-md-12">
+                            <div class="col-md-2"><input class="form-control" placeholder="请填写标题" id="titleName"></div>
+                            <label class="" style="line-height: 35px; float: left;">新闻类别：</label>
+                            <div class="col-md-2">
+                                <select class="form-control" id="status">
+                                    <option value=null>全部</option>
+                                    <option value="1">行业资讯</option>
+                                    <option value="2">新闻报告</option>
+                                </select>
+                            </div>
                                 <div class="col-md-2">
                                     <button class="btn btn-primary" style="float: right;" onclick="findall();">查询
                                     </button>
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-primary" style="float: right;" onclick="addUser();">新增用户
+                                    <button class="btn btn-primary" style="float: right;" onclick="addNewWord();">新增新闻
                                     </button>
                                 </div>
-                            </div>
                         </div>
                     </div>
                     <div class="box-body">
                         <table class="table" id="tb0">
                             <thead>
                             <tr>
-                                <th style="width: 155px;">用户名</th>
-                                <th style="width: 45px;">昵称</th>
-                                <th style="width: 130px;">头像</th>
+                                <th style="width: 155px;">新闻id</th>
+                                <th style="width: 45px;">新闻标题</th>
                                 <th style="width: 130px;">创建时间</th>
                                 <th>操作</th>
                             </tr>
@@ -55,10 +60,40 @@
     <script src="resources/plugins/page/page.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script th:inline="javascript">//引用
-    $(function () {
-        pageNo();
-    });
+    var no;
+    var url;
+    var pageNum = 1;
 
+
+    function GetRequest() {
+        url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            str = url.substr(1);
+            if (str.indexOf("&") != -1) {
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    no = theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                    pageNum = no;
+                }
+            } else {
+                no = theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+                pageNum = no;
+            }
+        }
+
+    }
+
+    $(function () {
+        GetRequest();
+        if (url != "") {
+            pageNo(no);
+        }
+        if (url == "") {
+            no = 1;
+            pageNo(no);
+        }
+    });
 
     function template(data) {
         var id;
@@ -66,89 +101,109 @@
         $("table tbody").empty();
         for (var i = 0; i < data.length; i++) {
             id = data[i].id;
-            var userName = (data[i].userName == null || data[i].userName == "" || data[i].userName == 'null') ? "" : data[i].userName;
-            var nickName = data[i].nickName == null ? "-" : data[i].nickName;
-            var userFace = data[i].userFace == null ? "-" : data[i].userFace;
+            var idname = id;
+            var title = data[i].title == null ? "-" : data[i].title;
+            var classify = data[i].classify == null ? "-" : data[i].classify;
             var createTime = data[i].createTime == null ? "-" : data[i].createTime;
-            $("#tb0 tbody").append("<tr class='pointer'>"
-                + "   <td>" + userName + "</td>"
-                + "   <td>" + nickName + "</td>"
-                + "   <td>" + userFace + "</td>"
+            var sortTop = data[i].sortTop == null ? "-" : data[i].sortTop;
+            var sortTopA;
+            if (sortTop) {
+                sortTopA = "<a  href='javascript:;'  onclick='toTop(" + id + ",false)'><span>置顶</span></a>"
+            } else {
+                sortTopA = "<a  href='javascript:;'  onclick='toTop(" + id + ",true)'><span>取消置顶</span></a>"
+            }
+            fun.SELECT = "doSearch(" + id + ")";
+            fun.UPDATE = "toupdate(" + id + ")";
+            //if (status == 0) {
+            //    fun.DOWN = "todown(" + id + ")";
+            $("table tbody").append("<tr class='poin ter'>"
+                + "   <td>" + idname + "</td>"
+                + "   <td>" + title + "</td>"
+                + "   <td>" + classify + "</td>"
                 + "   <td>" + createTime + "</td>"
-                + "   <td><a  href='javascript:;'  onclick='toChangePWD(" + id + ")'><span>修改密码&nbsp;&nbsp;</span></a></td>"
+                + "   <td><a  href='javascript:;'  onclick='toUpdate(" + id + ")'><span>查看&nbsp;&nbsp;</span></a>"
+                + "   " + sortTopA + "</td>"
                 + "   </tr>");
-
         }
     }
 
-    function pageNo() {
+    function pageNo(no) {
         $.ajax({
             type: "get",
-            url: "rhi-user/r_user",
+            url: "/rhi-acticle/r_acticle",
             data: {
-                user_name: "",
-                nick_name: "",
+                pageNo: no,
+                classify: null,
+                acticleName:null
             },
             dataType: "json",
             success: function (data) {
-                template(data.data);
+                $("#page").pagination({
+                    pageIndex: no, // 默认页
+                    pageSize: data.data.size, // 默认分页大小
+                    totalCount: data.data.total,
+                    onChange: function (pageIndex) {
+                        $.ajax({
+                            type: "get",
+                            url: "/rhi-acticle/r_acticle",
+                            data: {
+                                pageno: pageIndex
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                template(data.data.records);
+                                pageNum = pageIndex;
+                            },
+                            error: function () {
+                                swal("跳转失败！", "跳转失败。", "error");
+                            }
+                        })
+                    }
+                })
+                template(data.data.records);
             }
         });
     }
 
-    function findall() {
-        var username = $("#username").val();
+
+    function search() {
+        var titleName = $("#titleName").val();
+        var status = $("#status option:selected").val();
         $.ajax({
             type: "get",
-            url: "rhi-user/r_user",
+            url: "/rhi-acticle/r_acticle",
             data: {
-                user_name: username,
-                nick_name: "",
+                pageNo: no,
+                classify: status,
+                acticleName:titleName
             },
             dataType: "json",
             success: function (data) {
-                template(data.data);
+                $("#page").pagination({
+                    pageIndex: no, // 默认页
+                    pageSize: data.data.size, // 默认分页大小
+                    totalCount: data.data.total,
+                    onChange: function (pageIndex, pageSize) {
+                        $.ajax({
+                            type: "post",
+                            url: "bankfundfinacial/getfundlistbyparams.htm",
+                            data: {
+                                pageNo: no,
+                                classify: status,
+                                acticleName:titleName
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                //if(data.statusCode == 200){
+                                template(data.data.records);
+                                // }
+                            }
+                        })
+                    }
+                })
+                template(data.data.records);
             }
         })
-    }
-
-    function toChangePWD(id) {
-        swal({
-            title: "修改密码",
-            content: [{
-                element: "input",
-                attributes: {
-                    placeholder: "Type your password",
-                    type: "password",
-                    id: "passwd"
-                },
-            }],
-            button: {
-                text: "修改密码!",
-                closeModal: false,
-            },
-        }).then(name => {
-            if (!name) throw null;
-            $.ajax({
-                type: "post",
-                url: "user/changePwd",
-                data: {
-                    "userid": id,
-                    "userpwd": name,
-                },
-                dataType: "json",
-                success: function (data) {
-                    location.reload();
-                },
-                error: function () {
-
-                }
-            })
-        });
-    }
-
-    function addUser() {
-        location.href = "/hUserAdd";
     }
 
 

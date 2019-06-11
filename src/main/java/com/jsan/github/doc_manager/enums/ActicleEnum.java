@@ -13,4 +13,12 @@ public enum ActicleEnum {
         this.value = value;
     }
 
+
+    public static ActicleEnum getActicleClassify(int classify){
+        for (ActicleEnum value : ActicleEnum.values()) {
+            if (value.value==classify) return value;
+        }
+        return null;
+    }
+
 }

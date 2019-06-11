@@ -32,7 +32,7 @@ public class IndexController extends BaseController {
     @GetMapping(value = "hindex")
     public ModelAndView hindex(HttpSession session) {
         Console.log(session);
-        return new ModelAndView("UserList");
+        return new ModelAndView("NewWordList");
     }
 
 

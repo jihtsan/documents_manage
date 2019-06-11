@@ -59,3 +59,17 @@ rhino:
     userid: 1
 page:
   pagesize: 10
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-column-underline: true
+    id-type: 1
+    capital-mode: true
+pagehelper:
+  reasonable: false
+  support-methods-arguments: true
+  params: count=countSql
+  row-bounds-with-count: true
+  helper-dialect: mysql
