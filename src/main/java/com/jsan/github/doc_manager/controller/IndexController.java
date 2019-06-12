@@ -35,7 +35,6 @@ public class IndexController extends BaseController {
         return new ModelAndView("NewWordList");
     }
 
-
     @GetMapping(value = "hUserAdd")
     public ModelAndView hUserAdd(HttpSession session) {
         return new ModelAndView("UserAdd");
@@ -49,6 +48,11 @@ public class IndexController extends BaseController {
     @GetMapping(value = "hNewWordAdd")
     public ModelAndView hNewWordAdd(HttpSession session) {
         return new ModelAndView("NewWordAdd");
+    }
+
+    @GetMapping(value = "hNewWordUpdate")
+    public ModelAndView hNewWordUpdate(HttpSession session) {
+        return new ModelAndView("NewWordUpdate");
     }
 
 }

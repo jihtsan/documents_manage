@@ -28,7 +28,7 @@
             新闻新增
             <small></small>
         </h1>
-        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;" onclick="save();">保存</button>
+        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;" onclick="save();">更新</button>
     </section>
     <section class="content">
         <img class='img_close' src='resources/img/clone.png' style="display: none">
@@ -72,9 +72,58 @@
     <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
     <script th:inline="javascript">//引用
+    var id;
+    $(function (e) {
+        GetRequest();
+        getinfoByid();
+    })
+
+    function GetRequest() {
+        url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            str = url.substr(1);
+            if (str.indexOf("&") != -1) {
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    console.log(strs);
+                    id = theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                }
+            } else {
+                console.log(str);
+                id = theRequest[str.split("=")[0]] = unescape(str.split("=")[1]);
+            }
+        }
+
+    }
+
+    function getinfoByid(){
+        $.ajax({
+            type: "get",
+            url: "/rhi-acticle/r_get_acticle",
+            data: {
+                acticle: id,
+            },
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                var title = data.data.title == null ? "-" : data.data.title;
+                console.log(data.data.title);
+                var classify =data.data.classify == null ? "-" : data.data.classify;
+                console.log(data.data.classify);
+                var htmlContent =data.data.htmlContent == null ? "-" : data.data.htmlContent;
+                console.log(htmlContent);
+                $("#status option[text='"+classify+"']").attr("selected",true);
+                console.log(htmlContent);
+                $("#newtitle").val(title);
+                console.log(htmlContent);
+                $('#summernote').summernote('code', htmlContent);
+            }
+        })
+    }
 
     $('#summernote').summernote({
-        placeholder: 'Hello bootstrap 4',
+        placeholder: '编辑你的新闻稿',
         tabsize: 2,
         height: 100
     });
@@ -88,6 +137,7 @@
             url: "/rhi-acticle/cu_acticle",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
+                id: id,
                 title: titleName,
                 htmlContent: markupStr,
                 classify: status,

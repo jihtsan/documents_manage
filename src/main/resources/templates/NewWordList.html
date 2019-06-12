@@ -45,6 +45,7 @@
                             <tr>
                                 <th style="width: 155px;">新闻id</th>
                                 <th style="width: 45px;">新闻标题</th>
+                                <th style="width: 45px;">新闻种类</th>
                                 <th style="width: 130px;">创建时间</th>
                                 <th>操作</th>
                             </tr>
@@ -53,12 +54,20 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-7">
+                            <div class="fenye" id="page" style="float: right;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+    <!-- /.content -->
     <script src="resources/plugins/page/page.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
     <script th:inline="javascript">//引用
     var no;
     var url;
@@ -108,12 +117,11 @@
             var sortTop = data[i].sortTop == null ? "-" : data[i].sortTop;
             var sortTopA;
             if (sortTop) {
-                sortTopA = "<a  href='javascript:;'  onclick='toTop(" + id + ",false)'><span>置顶</span></a>"
+                sortTopA = "<a  href='javascript:;'  onclick='toTop(" + id + ",false)'><span>取消置顶</span></a>"
             } else {
-                sortTopA = "<a  href='javascript:;'  onclick='toTop(" + id + ",true)'><span>取消置顶</span></a>"
+                sortTopA = "<a  href='javascript:;'  onclick='toTop(" + id + ",true)'><span>置顶</span></a>"
+
             }
-            fun.SELECT = "doSearch(" + id + ")";
-            fun.UPDATE = "toupdate(" + id + ")";
             //if (status == 0) {
             //    fun.DOWN = "todown(" + id + ")";
             $("table tbody").append("<tr class='poin ter'>"
@@ -121,7 +129,7 @@
                 + "   <td>" + title + "</td>"
                 + "   <td>" + classify + "</td>"
                 + "   <td>" + createTime + "</td>"
-                + "   <td><a  href='javascript:;'  onclick='toUpdate(" + id + ")'><span>查看&nbsp;&nbsp;</span></a>"
+                + "   <td><a  href='javascript:;'  onclick='updateNewWord(" + id + ")'><span>更新&nbsp;&nbsp;</span></a>"
                 + "   " + sortTopA + "</td>"
                 + "   </tr>");
         }
@@ -138,6 +146,7 @@
             },
             dataType: "json",
             success: function (data) {
+                console.log(data);
                 $("#page").pagination({
                     pageIndex: no, // 默认页
                     pageSize: data.data.size, // 默认分页大小
@@ -151,7 +160,7 @@
                             },
                             dataType: "json",
                             success: function (data) {
-                                template(data.data.records);
+                                template(data.data.list);
                                 pageNum = pageIndex;
                             },
                             error: function () {
@@ -160,13 +169,13 @@
                         })
                     }
                 })
-                template(data.data.records);
+                template(data.data.list);
             }
         });
     }
 
 
-    function search() {
+    function findall() {
         var titleName = $("#titleName").val();
         var status = $("#status option:selected").val();
         $.ajax({
@@ -180,13 +189,13 @@
             dataType: "json",
             success: function (data) {
                 $("#page").pagination({
-                    pageIndex: no, // 默认页
+                    pageNo: no, // 默认页
                     pageSize: data.data.size, // 默认分页大小
                     totalCount: data.data.total,
                     onChange: function (pageIndex, pageSize) {
                         $.ajax({
-                            type: "post",
-                            url: "bankfundfinacial/getfundlistbyparams.htm",
+                            type: "get",
+                            url: "/rhi-acticle/r_acticle",
                             data: {
                                 pageNo: no,
                                 classify: status,
@@ -195,15 +204,39 @@
                             dataType: "json",
                             success: function (data) {
                                 //if(data.statusCode == 200){
-                                template(data.data.records);
+                                template(data.data.list);
                                 // }
                             }
                         })
                     }
                 })
-                template(data.data.records);
+                template(data.data.list);
             }
         })
+    }
+
+    function toTop(id,istop){
+        $.ajax({
+            type: "POST",
+            url: "/rhi-acticle/cu_acticle",
+            data: {
+                acticleId: id,
+                topTips: istop,
+            },
+            dataType: "json",
+            success: function (data) {
+                location.reload();
+            }
+        })
+    }
+
+
+    function addNewWord(){
+        location.href = "/hNewWordAdd";
+    }
+
+    function updateNewWord(id){
+        location.href = "/hNewWordUpdate?id="+id;
     }
 
 

@@ -14,6 +14,7 @@ import org.aspectj.bridge.MessageWriter;
 
 import java.sql.Blob;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * <p>
@@ -49,8 +50,8 @@ public class RhiActicle extends BaseEntity {
 
     private Boolean sortTop;
 
-    public static void main(String[] args) {
-        RhiActicle a =new RhiActicle().setClassify(ActicleEnum.COMPANY).setContentState(true).setHtmlContent("aaaaaaaaaaaaaaaaaaaa").setSortTop(true).setTitle("abc");
-        Console.log(JSON.toJSONString(a));
+    public String getClassify() {
+        if (Objects.isNull(classify))return null;
+        return classify.name();
     }
 }

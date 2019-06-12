@@ -44,6 +44,8 @@ public class RhiActicleServiceImpl extends ServiceImpl<RhiActicleMapper, RhiActi
 
     @Override
     public void acticle2Top(Long acticleId, boolean toptype) {
-        updateById((RhiActicle) new RhiActicle().setSortTop(toptype).setId(acticleId));
+        RhiActicle r = new RhiActicle();
+        r.setSortTop(toptype).setId(acticleId);
+        updateById( r);
     }
 }
