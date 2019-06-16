@@ -12,10 +12,11 @@
     <link rel="stylesheet" href="resources/plugins/summernote/summernote-lite.css">
     <!--<link rel="stylesheet" href="resources/plugins/datepicker/datepicker3.css">-->
     <link rel="stylesheet" href="resources/plugins/dist/css/selectize.default.css">
-    <link rel="stylesheet" href="resources/plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet"
+          href="resources/plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
     <style>
-        .waring{
-            border:2px solid red;
+        .waring {
+            border: 2px solid red;
         }
     </style>
     <script src="../static/resources/plugins/summernote/summernote-bs4.js"></script>
@@ -25,32 +26,46 @@
 <div layout:fragment="content">
     <section class="content-header">
         <h1>
-            新闻新增
+            产品更新
             <small></small>
         </h1>
-        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;" onclick="save();">更新</button>
+        <button class="btn btn-primary" style="float: right;margin-top: -20px;margin-bottom: 5px;" onclick="save();">
+            更新
+        </button>
     </section>
     <section class="content">
         <img class='img_close' src='resources/img/clone.png' style="display: none">
         <div class="form-group row">
             <div class="col-md-4">
                 <div class="input-group">
-                    <span class="input-group-addon">新闻标题</span>
-                    <input type="text" class="form-control" placeholder="请填写新闻标题" id="newtitle">
+                    <span class="input-group-addon">产品标题</span>
+                    <input type="text" class="form-control" placeholder="请填写产品名称" id="productName">
                 </div>
             </div>
-            <label class="" style="line-height: 35px; float: left;">新闻类别：</label>
+            <label class="" style="line-height: 35px; float: left;">产品类别：</label>
             <div class="col-md-4">
                 <select class="form-control" id="status">
-                    <option value="COMPANY">行业资讯</option>
-                    <option value="INDUSTRY">新闻报告</option>
+
                 </select>
             </div>
-
         </div>
-
-        <div class="row">
-            <div id="summernote"></div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <label class="" style="line-height: 35px; float: left;">产品图片：</label>
+                    <input type="file" id="file" name="file" onchange="updateFile();"/>
+                    <input type="hidden" id="pic" name="pic"/>
+                    <p id="picshow"></p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-addon">产品说明</span>
+                    <textarea type="text" class="form-control" placeholder="请填写产品说明" id="productcontent"></textarea>
+                </div>
+            </div>
         </div>
     </section>
     <script src="resources/plugins/page/page.js"></script>
@@ -72,11 +87,16 @@
     <script src="resources/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
     <script th:inline="javascript">//引用
+
     var id;
-    $(function (e) {
+    var picurl ;
+
+
+    $(function () {
+        getclassifylist();
         GetRequest();
-        getinfoByid();
     })
+
 
     function GetRequest() {
         url = location.search; //获取url中"?"符后的字串
@@ -97,50 +117,100 @@
 
     }
 
-    function getinfoByid(){
+    function getclassifylist() {
         $.ajax({
             type: "get",
-            url: "/rhi-acticle/r_get_acticle",
-            data: {
-                acticle: id,
+            url: "/product/r_product_dimension",
+            dataType: "json",
+            success: function (data) {
+                templateclassify(data.data);
+                getinfoByid();
+            }
+        });
+    }
+
+    function getinfoByid() {
+        $.ajax({
+            type: "get",
+            url: "/product/r_get_product",
+            data:{
+                productId:id
             },
             dataType: "json",
             success: function (data) {
-                var title = data.data.title == null ? "-" : data.data.title;
-                var classify =data.data.classify == null ? "-" : data.data.classify;
-                var htmlContent =data.data.htmlContent == null ? "-" : data.data.htmlContent;
-                $("#status option[value='"+classify+"']").attr("selected",true);
-                $("#newtitle").val(title);
-                $('#summernote').summernote('code', htmlContent);
+
+                var productName = data.data.productName == null ? "-" : data.data.productName;
+                var productContent = data.data.productContent == null ? "-" : data.data.productContent;
+                picurl = data.data.imgUrl == null ? "-" : data.data.imgUrl;
+                var dimensionId = data.data.dimensionId == null ? "-" : data.data.dimensionId;
+                $("#productName").val(productName);
+                $("#productcontent").val(productContent);
+                $("#status option[value='"+dimensionId+"']").attr("selected",true);
+                $("#picshow").empty();
+                $("#picshow").append("<img src='/file/g_file/"+picurl+"' width='80px' height='80px'/>")
             }
-        })
+        });
     }
 
-    $('#summernote').summernote({
-        placeholder: '编辑你的新闻稿',
-        tabsize: 2,
-        height: 100
-    });
+    function templateclassify(data) {
+        //渲染列表
+        $("#status").empty();
+        $("#status").append(
+            "<option value='12'>ceshi</option>"
+        );
+        for (var i = 0; i < data.length; i++) {
+            var id = data[i].id;
+            var dimensionName = data[i].dimensionName == null ? "-" : data[i].dimensionName;
+            $("#status").append(
+                "<option value=" + id + ">" + dimensionName + "</option>"
+            );
+        }
+    }
 
-    function save(){
-        var markupStr = $('#summernote').summernote('code');
-        var titleName = $("#newtitle").val();
+    function updateFile() {
+        $.ajaxFileUpload
+        (
+            {
+                url: '/file/u_file', //用于文件上传的服务器端请求地址
+                secureuri: false, //是否需要安全协议，一般设置为false
+                fileElementId: 'file', //文件上传域的ID
+                dataType: 'json', //返回值类型 一般设置为json
+                success: function (data)  //服务器成功响应处理函数
+                {
+                    $("#picshow").empty();
+                    picurl = data.data;
+                    $("#picshow").append("<img src='/file/g_file/"+picurl+"' width='80px' height='80px'/>")
+                },
+                error: function (data, status, e)//服务器响应失败处理函数
+                {
+                    alert(e);
+                }
+            }
+        )
+    }
+
+
+
+
+    function save() {
+        var productName = $("#productName").val();
+        var productcontent = $("#productcontent").val();
         var status = $("#status option:selected").val();
         $.ajax({
             type: "POST",
-            url: "/rhi-acticle/cu_acticle",
+            url: "/product/cu_product",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
-                id: id,
-                title: titleName,
-                htmlContent: markupStr,
-                classify: status,
-                createTime: new Date(),
-                sortTop:false
+                id:id,
+                productName: productName,
+                productContent: productcontent,
+                imgUrl:picurl,
+                dimensionId: status,
+                sortTop: false
             }),
             dataType: "json",
             success: function (data) {
-                location.href = "/toNewWordList";
+                location.href = "/toProductList";
             }
         })
     }

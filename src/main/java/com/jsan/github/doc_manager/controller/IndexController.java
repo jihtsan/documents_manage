@@ -23,36 +23,61 @@ import javax.servlet.http.HttpSession;
 public class IndexController extends BaseController {
 
 
-    @GetMapping(value = "hloginhtml")
-    public ModelAndView hloginhtml(HttpSession session) {
+    @GetMapping(value = "loginhtml")
+    public ModelAndView tologinhtml(HttpSession session) {
         Console.log(session);
         return new ModelAndView("Login");
     }
 
-    @GetMapping(value = "hindex")
-    public ModelAndView hindex(HttpSession session) {
+    @GetMapping(value = "toindex")
+    public ModelAndView toindex(HttpSession session) {
         Console.log(session);
-        return new ModelAndView("NewWordList");
+        return new ModelAndView("ProductList");
     }
 
-    @GetMapping(value = "hUserAdd")
-    public ModelAndView hUserAdd(HttpSession session) {
+    @GetMapping(value = "toUserAdd")
+    public ModelAndView toUserAdd(HttpSession session) {
         return new ModelAndView("UserAdd");
     }
 
-    @GetMapping(value = "hUserList")
-    public ModelAndView hUserList(HttpSession session) {
+    @GetMapping(value = "toUserList")
+    public ModelAndView toUserList(HttpSession session) {
         return new ModelAndView("UserList");
     }
 
-    @GetMapping(value = "hNewWordAdd")
-    public ModelAndView hNewWordAdd(HttpSession session) {
+    @GetMapping(value = "toNewWordList")
+    public ModelAndView toNewWordList(HttpSession session) {
+        return new ModelAndView("NewWordList");
+    }
+
+    @GetMapping(value = "toNewWordAdd")
+    public ModelAndView toNewWordAdd(HttpSession session) {
         return new ModelAndView("NewWordAdd");
     }
 
-    @GetMapping(value = "hNewWordUpdate")
-    public ModelAndView hNewWordUpdate(HttpSession session) {
+    @GetMapping(value = "toNewWordUpdate")
+    public ModelAndView toNewWordUpdate(HttpSession session) {
         return new ModelAndView("NewWordUpdate");
+    }
+
+    @GetMapping(value = "toProductClassifyList")
+    public ModelAndView toProductClassifyList(HttpSession session) {
+        return new ModelAndView("ProductClassifyList");
+    }
+
+    @GetMapping(value = "toProductList")
+    public ModelAndView toProductList(HttpSession session) {
+        return new ModelAndView("ProductList");
+    }
+
+    @GetMapping(value = "toProductAdd")
+    public ModelAndView toProductAdd(HttpSession session) {
+        return new ModelAndView("ProductAdd");
+    }
+
+    @GetMapping(value = "toProductUpdate")
+    public ModelAndView toProductUpdate(HttpSession session) {
+        return new ModelAndView("ProductUpdate");
     }
 
 }

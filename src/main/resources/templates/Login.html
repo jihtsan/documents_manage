@@ -30,7 +30,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="/login"><b>ERP</b>管理平台</a>
+        <a href="/login"><b>犀牛</b>管理平台</a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
@@ -137,7 +137,7 @@
                     //  console.log(data);
                     if (data.httpStatus == '00') {
                         sessionStorage.setItem("user",JSON.stringify(data.data));
-                        location.href = "/hindex";
+                        location.href = "/toindex";
                     } else {
                         $("#password").parent().find("label").remove();
                         $("#password").after('<label class="control-label text-danger">用户名或密码错误</label>')

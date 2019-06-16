@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -83,5 +84,12 @@ public class RhiUserServiceImpl extends ServiceImpl<RhiUserMapper, RhiUser> impl
     @Override
     public Set<String> getPermsByUserId(Long uid) {
         return new HashSet<>();
+    }
+
+    @Override
+    public void changePwd(long userId, String password) {
+        RhiUser r =  new RhiUser().setPassword(password).setUpdateTime(LocalDateTime.now().toString());
+        r.setId(userId);
+        updateById(r);
     }
 }

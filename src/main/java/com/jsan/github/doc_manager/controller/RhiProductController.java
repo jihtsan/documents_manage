@@ -52,10 +52,17 @@ public class RhiProductController extends BaseController {
     }
 
 
-    @ApiOperation(value = "产品2top", httpMethod = "GET", response = String.class)
+    @ApiOperation(value = "产品2top", httpMethod = "POST", response = String.class)
     @RequestMapping(value = "product2top", method = RequestMethod.POST, produces = "application/json")
-    public ResponseModel product2Top(Long productId, int topTips) {
+    public ResponseModel product2Top(Long productId, boolean topTips) {
         productService.product2Top(productId, topTips);
+        return responseSuccess();
+    }
+
+    @ApiOperation(value = "产品删除", httpMethod = "Post", response = String.class)
+    @RequestMapping(value = "d_product", method = RequestMethod.POST, produces = "application/json")
+    public ResponseModel d_product(Long productId) {
+        productService.removeById(productId);
         return responseSuccess();
     }
 
@@ -73,5 +80,10 @@ public class RhiProductController extends BaseController {
         return response(productDimensionService.save(productDimension));
     }
 
+    @ApiOperation(value = "产品维度删除", httpMethod = "POST", response = String.class)
+    @RequestMapping(value = "d_product_dimension", method = RequestMethod.POST, produces = "application/json")
+    public ResponseModel deleteProductDimensionList(long id) {
+        return response(productDimensionService.removeById(id));
+    }
 
 }

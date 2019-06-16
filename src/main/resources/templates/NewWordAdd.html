@@ -3,7 +3,7 @@
       layout:decorator="common/layout" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8"/>
-    <title>AlphaZ</title>
+    <title>犀牛管理</title>
     <link rel="stylesheet" href="resources/plugins/datatables/dataTables.bootstrap.css"/>
     <link rel="stylesheet" href="resources/plugins/bootstrap-select-1.12.4/css/bootstrap-select.min.css"/>
     <link rel="stylesheet" href="resources/plugins/sweetalert/sweetalert.css">
@@ -96,7 +96,8 @@
             }),
             dataType: "json",
             success: function (data) {
-                location.reload();
+                location.href = "/toNewWordList";
+
             }
         })
     }

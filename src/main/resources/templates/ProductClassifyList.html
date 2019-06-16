@@ -11,7 +11,7 @@
 <body>
 <div layout:fragment="content">
     <section class="content-header">
-        <h1>用户列表</h1>
+        <h1>新闻列表</h1>
     </section>
     <section class="content">
         <div class="row">
@@ -19,25 +19,19 @@
                 <div class="box">
                     <div class="box-header">
                         <div class="row col-md-12">
-                            <label class="col-md-2" style="line-height: 35px; float: left;">用户名</label>
-                            <div class="col-md-2"><input class="form-control" placeholder="请填写用户名" id="username"></div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary" style="float: right;" onclick="findall();">查询
-                                </button>
-                            </div>
-                            <div class="col-md-2">
-                                <button class="btn btn-primary" style="float: right;" onclick="addUser();">新增用户
-                                </button>
-                            </div>
+
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary" style="float: right;" onclick="addProductClassify();">新增产品种类
+                                    </button>
+                                </div>
                         </div>
                     </div>
                     <div class="box-body">
                         <table class="table" id="tb0">
                             <thead>
                             <tr>
-                                <th style="width: 155px;">用户名</th>
-                                <th style="width: 45px;">昵称</th>
-                                <th style="width: 130px;">创建时间</th>
+                                <th style="width: 155px;">产品种类id</th>
+                                <th style="width: 155px;">产品种类</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -45,12 +39,20 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-7">
+                            <div class="fenye" id="page" style="float: right;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+    <!-- /.content -->
     <script src="resources/plugins/page/page.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="resources/plugins/sweetalert/sweetalert.min.js"></script>
     <script th:inline="javascript">//引用
     $(function () {
         pageNo();
@@ -62,15 +64,14 @@
         //渲染列表
         $("table tbody").empty();
         for (var i = 0; i < data.length; i++) {
-            id = data[i].id;
-            var userName = (data[i].userName == null || data[i].userName == "" || data[i].userName == 'null') ? "" : data[i].userName;
-            var nickName = data[i].nickName == null ? "-" : data[i].nickName;
+            var id = (data[i].id == null || data[i].id == "" || data[i].id == 'null') ? "" : data[i].id;
+            var dimensionName = data[i].dimensionName == null ? "-" : data[i].dimensionName;
             var createTime = data[i].createTime == null ? "-" : data[i].createTime;
             $("#tb0 tbody").append("<tr class='pointer'>"
-                + "   <td>" + userName + "</td>"
-                + "   <td>" + nickName + "</td>"
+                + "   <td>" + id + "</td>"
+                + "   <td>" + dimensionName + "</td>"
                 + "   <td>" + createTime + "</td>"
-                + "   <td><a  href='javascript:;'  onclick='toChangePWD(" + id + ")'><span>修改密码&nbsp;&nbsp;</span></a></td>"
+                + "   <td><a  href='javascript:;'  onclick='deleteProductClassify(" + id + ")'><span>删除维度&nbsp;&nbsp;</span></a></td>"
                 + "   </tr>");
 
         }
@@ -79,11 +80,7 @@
     function pageNo() {
         $.ajax({
             type: "get",
-            url: "rhi-user/r_user",
-            data: {
-                user_name: "",
-                nick_name: "",
-            },
+            url: "product/r_product_dimension",
             dataType: "json",
             success: function (data) {
                 template(data.data);
@@ -91,39 +88,29 @@
         });
     }
 
-    function findall() {
-        var username = $("#username").val();
-        $.ajax({
-            type: "get",
-            url: "rhi-user/r_user",
-            data: {
-                user_name: username,
-                nick_name: "",
-            },
-            dataType: "json",
-            success: function (data) {
-                template(data.data);
-            }
-        })
-    }
-
-    function toChangePWD(id) {
+    function addProductClassify() {
         swal({
-            title: "修改密码",
-            content: "input",
+            title: "新增产品维度",
+            content: [{
+                element: "input",
+                attributes: {
+                    placeholder: "请输入想要展示的维度名称",
+                },
+            }],
             button: {
-                text: "修改密码!",
+                text: "新增维度!",
                 closeModal: false,
             },
         }).then(name => {
             if (!name) throw null;
             $.ajax({
                 type: "post",
-                url: "rhi-user/changePwd",
-                data: {
-                    "userid": id,
-                    "userpwd": name,
-                },
+                url: "product/c_product_dimension",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "dimensionName": name,
+                    "createTime":new Date()
+                }),
                 dataType: "json",
                 success: function (data) {
                     location.reload();
@@ -135,10 +122,19 @@
         });
     }
 
-    function addUser() {
-        location.href = "/toUserAdd";
+    function deleteProductClassify() {
+        $.ajax({
+            type: "post",
+            url: "/product/d_product_dimension",
+            data: {
+                id: id,
+            },
+            dataType: "json",
+            success: function (data) {
+                location.reload();
+            }
+        })
     }
-
 
     </script>
 </div>

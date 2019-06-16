@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  **/
 
 @Slf4j
-@Component
+//@Component
 public class TestQuartzTrigger implements ApplicationRunner {
 
     @Autowired

@@ -2,6 +2,7 @@ package com.jsan.github.doc_manager.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.jsan.github.doc_manager.entity.RhiProduct;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface IRhiProductService extends IService<RhiProduct> {
 
-    IPage<RhiProduct> retrieveProductList(String productName, Long dimensionId, int pageNo);
+    PageInfo<RhiProduct> retrieveProductList(String productName, Long dimensionId, int pageNo);
 
-    void product2Top(long productId, int topTips);
+    void product2Top(long productId, boolean topTips);
 }

@@ -61,6 +61,11 @@ public class RhiUserController extends BaseController {
         return response(userService.retrieveUser(userName,nickName));
     }
 
-
+    @ApiOperation(value = "修改用户密码", httpMethod = "POST", response = String.class)
+    @RequestMapping(value = "changePwd", method = RequestMethod.POST, produces = "application/json")
+    public ResponseModel changePwd(@RequestParam("userid") Long userid,@RequestParam("userpwd") String userpwd) {
+        userService.changePwd(userid,userpwd);
+        return responseSuccess();
+    }
 
 }

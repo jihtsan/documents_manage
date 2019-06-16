@@ -25,4 +25,6 @@ public interface IRhiUserService extends IService<RhiUser> {
     Set<String> getRolesByUserId(Long uid);
 
     Set<String> getPermsByUserId(Long uid);
+
+    void changePwd(long userId,String password);
 }

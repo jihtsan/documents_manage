@@ -62,6 +62,13 @@ public class RhiActicleController extends BaseController {
         return responseSuccess();
     }
 
+    @ApiOperation(value = "删除新闻", httpMethod = "POST", response = String.class)
+    @RequestMapping(value = "d_acticle", method = RequestMethod.POST, produces = "application/json")
+    public ResponseModel acticle2Top(Long acticle) {
+        acticleService.removeById(acticle);
+        return responseSuccess();
+    }
+
 
 }
 

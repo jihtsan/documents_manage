@@ -27,11 +27,13 @@ public class RhiProduct extends BaseEntity {
 
     private String productName;
 
-    private Blob productContent;
+    private String productContent;
 
     private Long dimensionId;
 
-    private int topTips;
+    private String imgUrl;
+
+    private boolean sortTop;
 
 
 }

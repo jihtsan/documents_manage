@@ -73,3 +73,6 @@ pagehelper:
   params: count=countSql
   row-bounds-with-count: true
   helper-dialect: mysql
+
+file:
+  path: F:\temp\img\
