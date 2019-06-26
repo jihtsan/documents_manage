@@ -4,6 +4,8 @@ import com.jsan.github.doc_manager.common.CustomerRealm;
 import com.jsan.github.doc_manager.service.IRhiUserService;
 import lombok.extern.log4j.Log4j2;
 import lombok.var;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.AbstractCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.cache.Cache;
@@ -42,36 +44,45 @@ import java.util.stream.Collectors;
 
 @Configuration
 @Log4j2
-public class ShiroConfig {
+public class
+ShiroConfig {
     private static final String SHIRO_AUTH_REDIS_CACHE_KEY = "XN:PO:SHIRO:AUTH";
     private static final String SHIRO_SESSION_REDIS_CACHE_KEY = "XN:PO:SHIRO:SESSION";
 
     @Bean
-    public Realm realm(IRhiUserService userService) {
+    public CredentialsMatcher credentialsMatcher() {
+        var matcher = new HashedCredentialsMatcher();
+        matcher.setHashIterations(2); // 做两次hash迭代
+        matcher.setStoredCredentialsHexEncoded(true); // 存储的是16的字符串表示
+        matcher.setHashAlgorithmName("md5");
+        return matcher;
+    }
+
+    @Bean
+    public Realm realm(IRhiUserService userService, CredentialsMatcher matcher) {
+        var realm = new CustomerRealm(userService);
+        realm.setCredentialsMatcher(matcher);
         return new CustomerRealm(userService);
     }
 
     @Bean
     public DefaultSecurityManager securityManager(Realm realm, CacheManager cacheManager, SessionManager sessionManager) {
         var sm = new DefaultWebSecurityManager(realm);
-        // TODO 添加分布式缓存实现以及分布式session实现
         sm.setCacheManager(cacheManager);
         sm.setSessionManager(sessionManager);
         return sm;
     }
 
+
     @Bean(name = "shiroFilter")
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         log.info("注入Shiro的WebFilter --> shiroFilter[{}]", ShiroFilterFactoryBean.class);
         var shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 配置不会被拦截的链接 顺序判断
-//        filterChainDefinitionMap.put("/**", "anon");
         //配置一般跳转,如果没有接口权限会直接跳转到403
-        filterChainDefinitionMap.put("/user/**", "anon");
-        filterChainDefinitionMap.put("/resources/**", "anon");
         filterChainDefinitionMap.put("/to**", "authc");
+        filterChainDefinitionMap.put("/**", "anon");
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
         //<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
@@ -83,9 +94,9 @@ public class ShiroConfig {
         //未授权界面;
         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
         return shiroFilterFactoryBean;
     }
-
 
     @Bean
     public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
@@ -109,7 +120,7 @@ public class ShiroConfig {
 
     @Bean
     public CacheManager cacheManager(@Autowired @Qualifier("objRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
-        return new AbstractCacheManager() {
+        AbstractCacheManager cacheManager = new AbstractCacheManager() {
 
             @Override
             protected Cache createCache(String name) throws CacheException {
@@ -170,15 +181,15 @@ public class ShiroConfig {
                 }
             }
         };
+        return cacheManager;
     }
 
     @Bean
     public SessionManager sessionManager(@Autowired @Qualifier("objRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager(){
             {
                 this.sessionDAO = new RedisSessionDAO(redisTemplate);
             }
-
             class RedisSessionDAO extends AbstractSessionDAO {
 
                 private final BoundHashOperations<String, Object, Object> ops;
@@ -212,12 +223,12 @@ public class ShiroConfig {
 
                 @Override
                 public Collection<Session> getActiveSessions() {
-                    return ops.values().stream().map(it -> (Session) it).collect(Collectors.toList());
+                    return ops.values().stream().map(it-> (Session) it).collect(Collectors.toList());
                 }
             }
         };
         // session 有效时间1分钟
-        sessionManager.setGlobalSessionTimeout(TimeUnit.MINUTES.toMillis(60*12));
+        sessionManager.setGlobalSessionTimeout(TimeUnit.MINUTES.toMillis(10*60));
         return sessionManager;
     }
 }

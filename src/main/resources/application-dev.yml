@@ -76,3 +76,9 @@ pagehelper:
 
 file:
   path: F:\temp\img\
+
+Qiniu:
+  accessKey: kjfv5lXEPvKoln0Sb9eWJVnHF-Fj5FUHrij3tuHZ
+  secretKey: nrwDjM_N5Cn3Ji9v-VIzclKY8Ap0vdaFjW0DD51v
+  bucket: jsan
+  url: http://ptnbysqj3.bkt.clouddn.com/
