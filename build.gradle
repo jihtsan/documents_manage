@@ -4,7 +4,6 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'war'
 
 group = 'com.jsan.github'
 version = '0.0.1-SNAPSHOT'
@@ -15,6 +14,14 @@ targetCompatibility = '1.8'
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
+	}
+}
+
+jar {
+	version = '0.0.1'
+	manifest {
+		attributes "Manifest-Version": 1.0,
+				'Main-Class': 'com.jsan.github.doc_manager.DocManagerApplication'
 	}
 }
 
@@ -29,7 +36,7 @@ repositories {
 
 configurations {
 	providedRuntime
-	// remove default logger
+	// remove default loggercd ..
 	all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
@@ -54,6 +61,5 @@ dependencies {
 	implementation 'mysql:mysql-connector-java'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	providedCompile "org.springframework.boot:spring-boot-starter-tomcat"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

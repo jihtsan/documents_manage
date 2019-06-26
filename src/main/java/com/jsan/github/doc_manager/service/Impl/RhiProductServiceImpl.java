@@ -34,8 +34,9 @@ public class RhiProductServiceImpl extends ServiceImpl<RhiProductMapper, RhiProd
     public PageInfo<RhiProduct> retrieveProductList(String productName, Long dimensionId, int pageNo) {
         LambdaQueryWrapper<RhiProduct> queryWrapper =new QueryWrapper<RhiProduct>().lambda();
         if (!Objects.isNull(dimensionId))queryWrapper.eq(RhiProduct::getDimensionId,dimensionId);
+        if (!Objects.isNull(productName))queryWrapper.like(RhiProduct::getProductName,productName);
         PageHelper.startPage(pageNo,pageSize);
-        return new PageInfo<>(list(queryWrapper.like(RhiProduct::getProductName,productName)));
+        return new PageInfo<>(list(queryWrapper));
     }
 
     @Override

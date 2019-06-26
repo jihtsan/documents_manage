@@ -9,9 +9,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class DocManagerApplication {
 
 
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(DocManagerApplication.class);
-    }
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//        return application.sources(DocManagerApplication.class);
+//    }
 
 
     public static void main(String[] args) {
